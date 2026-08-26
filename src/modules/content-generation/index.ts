@@ -49,8 +49,8 @@ export async function grade(
   const line = await db.fetchLine(supabase, params.lineId);
   return gradeAnswer({
     userAnswer: params.userAnswer,
-    acceptableJa: (line.acceptable_ja as string[]) ?? [],
-    acceptableRomaji: (line.acceptable_romaji as string[]) ?? [],
+    expectedEn: line.en,
+    acceptableEn: (line.acceptable_en as string[]) ?? [],
   });
 }
 

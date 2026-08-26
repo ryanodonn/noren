@@ -89,6 +89,8 @@ scenario_completion-- user_id, scenario_id, variant_id, level, completed_at,
                    -- score, PRIMARY KEY (user_id, variant_id, level)
 ```
 
+**The learner is never `speaker_a`/`speaker_b`.** Both are other people (e.g. `speaker_a = "Customer"`, `speaker_b = "Clerk"`) — the learner eavesdrops and translates every line, both speakers, into English (see §2.3). `who_text`/`goal_text` are written as a listening objective ("catch every line — what does X order, does Y need a bag..."), not as instructions to a participant. This wasn't the original design — see requirements.md §1 for how that got corrected.
+
 **Called by:** Session & Attempt, on session completion (`markScenarioCompletion`).
 
 **Extraction note:** the completion table is the only part that's user-scoped. If Catalog is ever extracted, completion may be better placed with Session — evaluate at extraction time.
@@ -108,9 +110,11 @@ getHint(lineId, hintsUsedSoFar)           → a static, graduated hint built fro
 getDebrief(summary, missedLines)         → templated review text
 ```
 
-**Grading, concretely:** every learner-facing line carries `acceptable_ja` and `acceptable_romaji` — small authored arrays of phrasings that count as correct, written alongside the dialogue itself. Grading normalizes the learner's answer, picks the matching script (kana/kanji vs. romaji), and scores against that set with edit-distance similarity: near-exact → `got_it`, partial → `close`, otherwise → `missed`. Pure functions, no I/O — see `src/modules/content-generation/grading.ts` and its tests.
+**The direction is translation, not production.** The learner is never one of the two speakers (§2.2) — every line, both speakers, gets played/shown in Japanese, and the learner types (or speaks) its English translation. Every line is graded; there's no passive/interactive split by speaker.
 
-**Hints, concretely:** no generation — hint depth 0 shows the line's authored `gist`, depth 1 shows `key_ja`/`key_romaji`, depth 2+ shows the full expected line. Same fields the original LLM prompt would have produced, just written once instead of regenerated per request.
+**Grading, concretely:** every line carries `acceptable_en` — a small authored array of English phrasings that count as correct alongside the line's own `en` field, written alongside the dialogue itself. Grading scores the learner's answer against `[en, ...acceptable_en]` using **word-overlap (Dice coefficient) similarity**, not character-level edit distance — English translations vary in word order and length far more than the old production-direction Japanese answer sets did, and edit distance would score legitimate paraphrases as wildly different. Near-exact word-set match → `got_it`, partial overlap → `close`, otherwise → `missed`. Pure functions, no I/O — see `src/modules/content-generation/grading.ts` and its tests.
+
+**Hints, concretely:** no generation — hint depth 0 shows the single hardest word's gloss (`key_ja`/`key_en`), depth 1 shows the fuller `gist` context clue, depth 2+ shows the full `en` translation. (Depth 0 can't lead with `gist` — it was authored as a near-paraphrase of the line, which would hand over the answer immediately.)
 
 **Owns tables**
 ```sql
@@ -118,17 +122,17 @@ generated_dialogues -- id, scenario_id, variant_id, level, setting, prompt_versi
                     -- created_at, model  ('model' = 'authored' in v1, not a real model id)
 generated_lines     -- id, dialogue_id, seq, speaker, ja, kana, romaji, en,
                     -- gist, key_ja, key_romaji, key_en, tokens jsonb, audio_url,
-                    -- acceptable_ja jsonb, acceptable_romaji jsonb
+                    -- acceptable_en jsonb
 ```
 
 **Cache strategy, revised:** the "pool" is now the entire authored bank for a `(scenario, variant, level, prompt_version)` key — `getDialogue` picks uniformly at random across it for replay variety. There is no background top-up, because there is no generation to top up with. Growing the pool means authoring more dialogues for a key, same as adding a scenario or variant — a data operation, not a deploy (§3).
 
 **What v1 gives up, honestly:**
-- **Paraphrase tolerance.** An LLM grader understood answers nobody anticipated; fuzzy-matching only recognizes what's in the authored `acceptable_ja`/`acceptable_romaji` arrays. A correct answer phrased unexpectedly reads as `missed`.
+- **Paraphrase tolerance is weaker than the production-direction version was.** Word overlap tolerates reordering and filler-word differences, but a same-meaning-different-words answer ("heat it up" vs. the authored "warm this please") shares no words and scores as `missed` even though it's correct. Mitigated by authoring several `acceptable_en` phrasings per line — but it's still a narrower net than an LLM grader would cast.
 - **"Never truly exhausted" (§3) no longer holds as stated.** With a fixed bank instead of infinite generation, a learner *can* run out of authored dialogues for a `(scenario × variant × level)` combination. Mitigation is the same as growing the catalog itself: author more content for that key.
 - **Debriefs are templated, not written.** Accurate, not personalized prose.
 
-**If live generation is added back later** (a real LLM key becomes acceptable, or as an opt-in upgrade): keep it behind this same module interface — `getDialogue`/`grade`/`getHint`/`getDebrief` — so callers never know which mode is active. `prompt_version`/`model` already distinguish authored rows (`'authored-v1'` / `'authored'`) from anything a future generator would write, so the two can coexist in the same pool without a migration.
+**If live generation is added back later** (a real LLM key becomes acceptable, or as an opt-in upgrade): keep it behind this same module interface — `getDialogue`/`grade`/`getHint`/`getDebrief` — so callers never know which mode is active. `prompt_version`/`model` already distinguish authored rows (`'authored-v2'` / `'authored'`) from anything a future generator would write, so the two can coexist in the same pool without a migration.
 
 ---
 

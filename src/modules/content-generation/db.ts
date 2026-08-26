@@ -2,7 +2,10 @@ import "server-only";
 import type { DbClient } from "@/lib/supabase/types";
 import type { LevelId } from "@/lib/types";
 
-export const CONTENT_VERSION = "authored-v1";
+// v2: translation-direction grading (acceptable_en) replaced the old
+// production-direction grading (acceptable_ja/acceptable_romaji) — see
+// docs/services.md §2.3. Bumped so the pool never mixes old/new-shaped rows.
+export const CONTENT_VERSION = "authored-v2";
 
 type PoolKey = { scenarioId: string; variantId: string; level: LevelId };
 
@@ -31,8 +34,7 @@ export type AuthoredLine = {
   key_romaji: string | null;
   key_en: string | null;
   tokens: { ja: string; kana?: string; romaji?: string; en?: string }[];
-  acceptable_ja?: string[];
-  acceptable_romaji?: string[];
+  acceptable_en?: string[];
 };
 
 /** Seeding path — used to author new pool content (see scripts/seed-content). */
@@ -74,8 +76,7 @@ export async function insertDialogueWithLines(
       key_romaji: line.key_romaji,
       key_en: line.key_en,
       tokens: line.tokens,
-      acceptable_ja: line.acceptable_ja ?? [],
-      acceptable_romaji: line.acceptable_romaji ?? [],
+      acceptable_en: line.acceptable_en ?? [],
     })),
   );
   if (linesError) throw linesError;

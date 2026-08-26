@@ -34,7 +34,7 @@ export default async function ScenarioPage({ params }: PageProps<"/scenarios/[id
           <dd className="text-neutral-600">{scenario.who_text}</dd>
         </div>
         <div>
-          <dt className="font-medium text-neutral-700">Your goal</dt>
+          <dt className="font-medium text-neutral-700">Listen for</dt>
           <dd className="text-neutral-600">{scenario.goal_text}</dd>
         </div>
       </dl>

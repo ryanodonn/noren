@@ -62,7 +62,7 @@ export function DrillClient(props: {
 
   async function onMic() {
     try {
-      const transcript = await listen({ lang: "ja-JP" });
+      const transcript = await listen({ lang: "en-US" });
       setUserAnswer(transcript);
     } catch {
       // mic not available/denied — the text input still works
@@ -119,113 +119,98 @@ export function DrillClient(props: {
       <div className="rounded border p-4">
         <p className="mb-1 text-xs font-medium text-neutral-500">{speakerName}</p>
 
-        {line.speaker === "b" ? (
-          <>
-            <p className="text-lg">{line.ja}</p>
-            {line.kana && <p className="text-sm text-neutral-500">{line.kana}</p>}
-            {line.romaji && <p className="text-sm text-neutral-400">{line.romaji}</p>}
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => speak(line.ja, { lang: "ja-JP" })}
-                className="rounded border px-2 py-1 text-xs hover:bg-neutral-50"
-              >
-                ▶ Play
-              </button>
-              {line.tokens.map((t) => (
+        <p className="text-lg">{line.ja}</p>
+        {line.kana && <p className="text-sm text-neutral-500">{line.kana}</p>}
+        {line.romaji && <p className="text-sm text-neutral-400">{line.romaji}</p>}
+
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => speak(line.ja, { lang: "ja-JP" })}
+            className="rounded border px-2 py-1 text-xs hover:bg-neutral-50"
+          >
+            ▶ Play
+          </button>
+          {line.tokens.map((t) => (
+            <button
+              key={t.ja}
+              onClick={() => onLookup(t)}
+              className={`rounded px-2 py-1 text-xs ${
+                lookedUp.has(t.ja)
+                  ? "bg-blue-50 text-blue-700"
+                  : "border text-neutral-500 hover:bg-neutral-50"
+              }`}
+              title={t.en}
+            >
+              {t.ja}
+            </button>
+          ))}
+        </div>
+
+        {!result ? (
+          <div className="mt-3 flex flex-col gap-2">
+            <div className="flex gap-2">
+              <input
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Type (or speak) the English translation"
+                className="flex-1 rounded border px-3 py-2"
+                onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+              />
+              {supported && (
                 <button
-                  key={t.ja}
-                  onClick={() => onLookup(t)}
-                  className={`rounded px-2 py-1 text-xs ${
-                    lookedUp.has(t.ja)
-                      ? "bg-blue-50 text-blue-700"
-                      : "border text-neutral-500 hover:bg-neutral-50"
-                  }`}
-                  title={t.en}
+                  onClick={onMic}
+                  disabled={isListening}
+                  className="rounded border px-3 py-2 text-sm hover:bg-neutral-50 disabled:opacity-50"
                 >
-                  {t.ja}
+                  🎤
                 </button>
-              ))}
+              )}
             </div>
+
+            {hintText && <p className="text-sm text-amber-700">{hintText}</p>}
+
+            <div className="flex gap-2">
+              <button
+                onClick={onSubmit}
+                disabled={isPending || !userAnswer.trim()}
+                className="rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700 disabled:opacity-50"
+              >
+                Submit
+              </button>
+              <button
+                onClick={onHint}
+                className="rounded border px-3 py-1.5 text-sm hover:bg-neutral-50"
+              >
+                Hint
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-3">
+            <p
+              className={`text-sm font-medium ${
+                result.verdict === "got_it"
+                  ? "text-green-700"
+                  : result.verdict === "close"
+                    ? "text-amber-700"
+                    : "text-red-700"
+              }`}
+            >
+              {result.verdict === "got_it"
+                ? "Got it!"
+                : result.verdict === "close"
+                  ? "Close"
+                  : "Missed"}
+            </p>
+            <p className="text-sm text-neutral-600">{result.note}</p>
+            <p className="mt-2 text-sm text-neutral-500">Translation: {line.en}</p>
             <button
               onClick={goNext}
-              className="mt-4 rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700"
+              className="mt-3 rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700"
             >
               Continue
             </button>
-          </>
-        ) : (
-          <>
-            <p className="text-neutral-700">Say: {line.en}</p>
-
-            {!result ? (
-              <div className="mt-3 flex flex-col gap-2">
-                <div className="flex gap-2">
-                  <input
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
-                    placeholder="Type or speak your answer in Japanese"
-                    className="flex-1 rounded border px-3 py-2"
-                    onKeyDown={(e) => e.key === "Enter" && onSubmit()}
-                  />
-                  {supported && (
-                    <button
-                      onClick={onMic}
-                      disabled={isListening}
-                      className="rounded border px-3 py-2 text-sm hover:bg-neutral-50 disabled:opacity-50"
-                    >
-                      🎤
-                    </button>
-                  )}
-                </div>
-
-                {hintText && <p className="text-sm text-amber-700">{hintText}</p>}
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={onSubmit}
-                    disabled={isPending || !userAnswer.trim()}
-                    className="rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700 disabled:opacity-50"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    onClick={onHint}
-                    className="rounded border px-3 py-1.5 text-sm hover:bg-neutral-50"
-                  >
-                    Hint
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-3">
-                <p
-                  className={`text-sm font-medium ${
-                    result.verdict === "got_it"
-                      ? "text-green-700"
-                      : result.verdict === "close"
-                        ? "text-amber-700"
-                        : "text-red-700"
-                  }`}
-                >
-                  {result.verdict === "got_it"
-                    ? "Got it!"
-                    : result.verdict === "close"
-                      ? "Close"
-                      : "Missed"}
-                </p>
-                <p className="text-sm text-neutral-600">{result.note}</p>
-                <p className="mt-2 text-sm text-neutral-500">
-                  Expected: {line.ja} ({line.en})
-                </p>
-                <button
-                  onClick={goNext}
-                  className="mt-3 rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700"
-                >
-                  Continue
-                </button>
-              </div>
-            )}
-          </>
+          </div>
         )}
       </div>
     </div>

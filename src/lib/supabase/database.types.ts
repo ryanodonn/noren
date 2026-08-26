@@ -128,8 +128,7 @@ export type Database = {
       }
       generated_lines: {
         Row: {
-          acceptable_ja: Json
-          acceptable_romaji: Json
+          acceptable_en: Json
           audio_url: string | null
           dialogue_id: string
           en: string
@@ -146,8 +145,7 @@ export type Database = {
           tokens: Json
         }
         Insert: {
-          acceptable_ja?: Json
-          acceptable_romaji?: Json
+          acceptable_en?: Json
           audio_url?: string | null
           dialogue_id: string
           en: string
@@ -164,8 +162,7 @@ export type Database = {
           tokens?: Json
         }
         Update: {
-          acceptable_ja?: Json
-          acceptable_romaji?: Json
+          acceptable_en?: Json
           audio_url?: string | null
           dialogue_id?: string
           en?: string
