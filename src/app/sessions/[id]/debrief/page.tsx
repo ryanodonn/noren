@@ -2,12 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import * as Session from "@/modules/session";
-import * as ContentGeneration from "@/modules/content-generation";
 import * as Progression from "@/modules/progression";
 import * as Catalog from "@/modules/catalog";
-import { acceptRecommendation, dismissRecommendation } from "@/app/actions";
+import * as Identity from "@/modules/identity";
+import { acceptRecommendation, dismissRecommendation, startSessionAction } from "@/app/actions";
+import { ScriptRecap } from "./ScriptRecap";
 
-export default async function DebriefPage({ params }: PageProps<"/sessions/[id]/debrief">) {
+export default async function DonePage({ params }: PageProps<"/sessions/[id]/debrief">) {
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -15,19 +16,17 @@ export default async function DebriefPage({ params }: PageProps<"/sessions/[id]/
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ scenario }, { summary, missedLines }, { levelState, recommendation }, levels] =
+  const [{ session, dialogue, scenario }, { summary }, { levelState, recommendation }, levels, me] =
     await Promise.all([
       Session.getSession(supabase, id),
       Session.getSummary(supabase, id),
       Progression.getStatus(supabase, user.id),
       Catalog.listLevels(supabase),
+      Identity.getMe(supabase),
     ]);
 
-  const { debrief } = await ContentGeneration.getDebrief({
-    scenarioNameEn: scenario.name_en,
-    summary,
-    missedLines,
-  });
+  const total = summary.got_it + summary.close + summary.missed;
+  const savedVoices = (me?.profile.voice_assignments as { a?: string; b?: string } | null) ?? {};
 
   let recommendationText: string | null = null;
   if (recommendation) {
@@ -39,53 +38,85 @@ export default async function DebriefPage({ params }: PageProps<"/sessions/[id]/
       : `Want to drop back to ${toLevel?.label_ja} for a bit? (${recommendation.reason})`;
   }
 
-  return (
-    <main className="mx-auto max-w-xl flex-1 px-6 py-10">
-      <h1 className="mb-4 text-xl font-semibold">Debrief</h1>
+  const replaySameLevel = async () => {
+    "use server";
+    await startSessionAction({ scenarioId: scenario.id, level: session.level });
+  };
 
-      <div className="mb-6 grid grid-cols-4 gap-2 text-center text-sm">
-        <div className="rounded border p-3">
-          <p className="text-lg font-semibold text-green-700">{summary.got_it}</p>
-          <p className="text-neutral-500">Got it</p>
+  return (
+    <main className="board min-h-screen p-5 sm:p-8">
+      <div className="max-w-2xl mx-auto">
+        <div className="text-xs tracking-[0.3em] mb-1 text-noren-amber">おつかれさま</div>
+        <h1 className="text-4xl font-semibold uppercase tracking-wide mb-6">Session complete</h1>
+
+        <div className="flex gap-px mb-8 grid-list">
+          {(
+            [
+              ["Got it", summary.got_it, "var(--noren-cyan)"],
+              ["Close", summary.close, "var(--noren-amber)"],
+              ["Missed", summary.missed, "var(--noren-rose)"],
+            ] as const
+          ).map(([k, v, c]) => (
+            <div key={k} className="flex-1 px-4 py-4 bg-noren-panel">
+              <div className="text-3xl font-semibold" style={{ color: c }}>
+                {v}
+              </div>
+              <div className="text-xs uppercase tracking-[0.15em] text-noren-dim">{k}</div>
+            </div>
+          ))}
         </div>
-        <div className="rounded border p-3">
-          <p className="text-lg font-semibold text-amber-700">{summary.close}</p>
-          <p className="text-neutral-500">Close</p>
+
+        {recommendation && recommendationText && (
+          <div className="mb-8 px-4 py-4 border-l-3 border-noren-amber bg-noren-panel">
+            <p className="mb-3 text-sm">{recommendationText}</p>
+            <div className="flex gap-2">
+              <form action={acceptRecommendation}>
+                <input type="hidden" name="eventId" value={recommendation.id} />
+                <button className="px-3 py-1.5 text-xs uppercase tracking-[0.15em] bg-noren-amber text-noren-bg">
+                  Accept
+                </button>
+              </form>
+              <form action={dismissRecommendation}>
+                <input type="hidden" name="eventId" value={recommendation.id} />
+                <button className="px-3 py-1.5 text-xs uppercase tracking-[0.15em] border border-noren-edge text-noren-dim">
+                  Not now
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div className="text-xs tracking-[0.25em] mb-3 text-noren-dim">
+          FULL SCRIPT{total === 0 && " — nothing graded yet"}
         </div>
-        <div className="rounded border p-3">
-          <p className="text-lg font-semibold text-red-700">{summary.missed}</p>
-          <p className="text-neutral-500">Missed</p>
-        </div>
-        <div className="rounded border p-3">
-          <p className="text-lg font-semibold">{summary.total_hints}</p>
-          <p className="text-neutral-500">Hints</p>
+        <ScriptRecap
+          lines={dialogue.generated_lines.map((l) => ({
+            seq: l.seq,
+            speaker: l.speaker as "a" | "b",
+            ja: l.ja,
+            romaji: l.romaji,
+            en: l.en,
+          }))}
+          speakerA={scenario.speaker_a}
+          speakerB={scenario.speaker_b}
+          voiceA={savedVoices.a ?? null}
+          voiceB={savedVoices.b ?? null}
+        />
+
+        <div className="flex gap-3">
+          <form action={replaySameLevel} className="flex-1">
+            <button className="w-full py-4 font-semibold uppercase tracking-[0.2em] bg-noren-amber text-noren-bg">
+              New dialogue, same level
+            </button>
+          </form>
+          <Link
+            href="/"
+            className="px-6 py-4 text-xs uppercase tracking-[0.2em] border border-noren-edge text-noren-dim"
+          >
+            Change
+          </Link>
         </div>
       </div>
-
-      <p className="mb-6 rounded border bg-neutral-50 p-4 text-sm text-neutral-700">{debrief}</p>
-
-      {recommendation && recommendationText && (
-        <div className="mb-6 rounded border border-amber-200 bg-amber-50 p-4 text-sm">
-          <p className="mb-3">{recommendationText}</p>
-          <div className="flex gap-2">
-            <form action={acceptRecommendation}>
-              <input type="hidden" name="eventId" value={recommendation.id} />
-              <button className="rounded bg-neutral-900 px-3 py-1 text-white">Accept</button>
-            </form>
-            <form action={dismissRecommendation}>
-              <input type="hidden" name="eventId" value={recommendation.id} />
-              <button className="rounded border px-3 py-1">Not now</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      <Link
-        href="/"
-        className="inline-block rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
-      >
-        Back to scenarios
-      </Link>
     </main>
   );
 }

@@ -75,21 +75,23 @@ This is the context that answers *"what should this user be offered next?"* — 
 ```
 GET  /scenarios?level={level}          → available, with completion state
 GET  /scenarios/{id}/next-variant?user_id=&level=   → selects an unplayed variant
-GET  /scenarios/{id}/briefing
 POST /scenarios/{id}/reset             → explicit user request to replay
 ```
 
 **Owns tables**
 ```sql
-scenarios          -- id, slug, name_ja, name_en, line_label, speaker_a, speaker_b,
-                   -- where_text, who_text, goal_text, opener_text, persona_prompt
+levels             -- id, label_ja, label_en, sort_order, spec, rate
+scenarios          -- id, slug, name_ja, name_en, line_label, speaker_a, speaker_b
 scenario_variants  -- id, scenario_id, description, active
-seed_phrases       -- id, scenario_id, ja, romaji, en
 scenario_completion-- user_id, scenario_id, variant_id, level, completed_at,
                    -- score, PRIMARY KEY (user_id, variant_id, level)
 ```
 
-**The learner is never `speaker_a`/`speaker_b`.** Both are other people (e.g. `speaker_a = "Customer"`, `speaker_b = "Clerk"`) — the learner eavesdrops and translates every line, both speakers, into English (see §2.3). `who_text`/`goal_text` are written as a listening objective ("catch every line — what does X order, does Y need a bag..."), not as instructions to a participant. This wasn't the original design — see requirements.md §1 for how that got corrected.
+`levels.spec` is the grammar/vocabulary constraint fed into Content Generation's prompt (§2.3); `levels.rate` is the TTS playback rate for that level (§2.4), increasing from 0.65 at 幼児 to 1.05 at N4 — the drill literally sounds faster and more natural as level increases, not just harder in content.
+
+No separate briefing content (`where_text`/`who_text`/`goal_text`/`opener_text`/`persona_prompt`, plus a `seed_phrases` table) — that schema existed in an earlier iteration and was dropped along with the separate briefing page it backed (see below). `scenario_variants.description` is a short scene seed (e.g. *"a customer checking out with a bento that needs heating"*) fed straight into Content Generation's prompt, not authored copy shown to the learner.
+
+**The learner is never `speaker_a`/`speaker_b`.** Both are other people — `speaker_a` is conventionally the staff/host role (店員, 駅員, 運転手...), `speaker_b` the customer/passenger role (客, 乗客...). The learner eavesdrops and translates every line, both speakers, into English (see §2.3). This wasn't the original design — see requirements.md §1 for how that got corrected — and it's also why there's no separate briefing step: nothing to brief, the learner just picks a scene and level and listens in. Level and scenario selection is a single combined picker screen, not a browse-then-brief flow.
 
 **Called by:** Session & Attempt, on session completion (`markScenarioCompletion`).
 
@@ -98,54 +100,61 @@ scenario_completion-- user_id, scenario_id, variant_id, level, completed_at,
 ---
 
 ### 2.3 Content Generation
-**Owns:** dialogue content, grading, debriefs — **no live LLM in v1.**
+**Owns:** dialogue content and grading. Hybrid: a shared pool of hand-authored and live-generated dialogues, LLM grading with a rule-based fallback.
 
-**v1 pivot (deliberate, revisit before scaling content authoring):** this context was originally an LLM-bound wrapper around Claude — generate on demand, cache the result. In practice that meant a real per-app API key and real ongoing cost just to run a demo. v1 instead ships as a **fixed, hand-authored content bank**: dialogues are written once (by a person, or by an AI assistant during a build session — not by a runtime API call) and inserted directly into the pool tables below. Grading, hints, and debriefs are rule-based, not generated. This is a real trade — see "What v1 gives up," below — not a free simplification.
+**History (relevant — this flip-flopped twice):** originally designed as an LLM-bound wrapper around Claude. Went LLM-free for a build pass (real per-app API key, real ongoing cost, for a project with zero users yet) — dialogues became a fixed hand-authored bank, grading became pure rule-based word-overlap matching, hints became static tiers. Then the actual target UX turned out to need 7 scenarios × 6 levels of dialogue that's fresh every time — 210+ combinations, never repeating — which hand-authoring can't realistically cover. Live generation came back, via **Gemini** (`@google/genai`, model `gemini-2.5-flash`, Google AI Studio free-tier key — not Anthropic, not Vertex AI) rather than the original Claude plan, because a free tier exists and the user already had a Google account. The rule-based grader from the LLM-free phase wasn't thrown away — it's now the **fallback** when the live grading call fails, which is strictly better than either extreme alone.
 
 **Surface (in-process, per §4 — not literal HTTP)**
 ```
-getDialogue(scenario, variant, level)     → a pooled dialogue, picked at random
-grade(lineId, userAnswer)                 → verdict + note, via fuzzy match against authored acceptable answers
-getHint(lineId, hintsUsedSoFar)           → a static, graduated hint built from the line's own fields
-getDebrief(summary, missedLines)         → templated review text
+getDialogue(scenario, variant, level)  → pool hit: serve (top up pool in background if thin)
+                                        → pool miss: generate live via Gemini, store, serve
+grade(lineId, userAnswer)              → Gemini grades leniently; on failure, falls back to
+                                          rule-based word-overlap matching against the line's
+                                          own `en` + authored `acceptable_en` (never throws)
 ```
 
-**The direction is translation, not production.** The learner is never one of the two speakers (§2.2) — every line, both speakers, gets played/shown in Japanese, and the learner types (or speaks) its English translation. Every line is graded; there's no passive/interactive split by speaker.
+**The direction is translation, not production.** The learner is never one of the two speakers (§2.2) — every line, both speakers, gets played in Japanese (audio-first — see below), and the learner types or speaks its English translation. Every line is graded; there's no passive/interactive split by speaker.
 
-**Grading, concretely:** every line carries `acceptable_en` — a small authored array of English phrasings that count as correct alongside the line's own `en` field, written alongside the dialogue itself. Grading scores the learner's answer against `[en, ...acceptable_en]` using **word-overlap (Dice coefficient) similarity**, not character-level edit distance — English translations vary in word order and length far more than the old production-direction Japanese answer sets did, and edit distance would score legitimate paraphrases as wildly different. Near-exact word-set match → `got_it`, partial overlap → `close`, otherwise → `missed`. Pure functions, no I/O — see `src/modules/content-generation/grading.ts` and its tests.
+**Audio-first, not read-first.** Nothing about a line is shown before the learner answers except which speaker is talking — no transcript, no translation. They hear it (▸ Play, or Slower at 0.6× the level's rate) and answer from listening alone. Hints (below) are the only way to see any text before answering, and they're opt-in and graduated.
 
-**Hints, concretely:** no generation — hint depth 0 shows the single hardest word's gloss (`key_ja`/`key_en`), depth 1 shows the fuller `gist` context clue, depth 2+ shows the full `en` translation. (Depth 0 can't lead with `gist` — it was authored as a near-paraphrase of the line, which would hand over the answer immediately.)
+**Grading, concretely:** the primary path is a Gemini call — *"grade generously, meaning matters, exact wording does not"* — returning `{verdict, note}` with a specific note about what was misread on anything less than `got_it`. If that call fails (network, quota, parse failure — anything), it falls back to **word-overlap (Dice coefficient) similarity** against `[line.en, ...line.acceptable_en]`: tokenize both into normalized word sets, score by `2×|intersection|/(|A|+|B|)`. This tolerates reordering and filler-word differences far better than character-level edit distance would for English answers, at the honest cost of missing same-meaning-different-words paraphrases the LLM path would have caught. Pure, tested — `src/modules/content-generation/grading.ts`.
+
+**Hints, concretely:** three tiers, client-rendered from data already loaded (no round-trip) and **stacking** — at tier 2 you see both tier 1 and tier 2, not just tier 2:
+1. `gist` — a short nudge ("asking about the price") that must not give away the translation
+2. `key_ja`/`key_romaji`/`key_en` — the single hardest word in the line, glossed
+3. `kana`+`romaji` — the full reading, so a learner who misheard can check, but they still have to translate it themselves
+
+None of the three tiers ever reveals `en` — see `src/modules/content-generation/hints.ts` (pure) and its client-safe re-export `client.ts` (DrillClient, a client component, needs this without pulling in the Gemini client — see §0's module-boundary note in CLAUDE.md).
 
 **Owns tables**
 ```sql
 generated_dialogues -- id, scenario_id, variant_id, level, setting, prompt_version,
-                    -- created_at, model  ('model' = 'authored' in v1, not a real model id)
+                    -- created_at, model
 generated_lines     -- id, dialogue_id, seq, speaker, ja, kana, romaji, en,
                     -- gist, key_ja, key_romaji, key_en, tokens jsonb, audio_url,
                     -- acceptable_en jsonb
 ```
 
-**Cache strategy, revised:** the "pool" is now the entire authored bank for a `(scenario, variant, level, prompt_version)` key — `getDialogue` picks uniformly at random across it for replay variety. There is no background top-up, because there is no generation to top up with. Growing the pool means authoring more dialogues for a key, same as adding a scenario or variant — a data operation, not a deploy (§3).
+`tokens` must reconstruct the full line when concatenated in order — it's what makes the post-answer "tap any word" reveal possible. Hand-authored rows from the LLM-free phase only tokenized notable vocabulary, not the whole sentence; the reveal UI checks reconstruction and falls back to plain (non-tappable) text for those rows rather than rendering a sentence with gaps.
 
-**What v1 gives up, honestly:**
-- **Paraphrase tolerance is weaker than the production-direction version was.** Word overlap tolerates reordering and filler-word differences, but a same-meaning-different-words answer ("heat it up" vs. the authored "warm this please") shares no words and scores as `missed` even though it's correct. Mitigated by authoring several `acceptable_en` phrasings per line — but it's still a narrower net than an LLM grader would cast.
-- **"Never truly exhausted" (§3) no longer holds as stated.** With a fixed bank instead of infinite generation, a learner *can* run out of authored dialogues for a `(scenario × variant × level)` combination. Mitigation is the same as growing the catalog itself: author more content for that key.
-- **Debriefs are templated, not written.** Accurate, not personalized prose.
+**Cache strategy:** hand-authored rows and live-generated rows share one pool per `(scenario, variant, level)` — `prompt_version`/`model` are provenance metadata (which generation era wrote this row), not a partition key, so `getDialogue`'s pool lookup doesn't filter on them. Picks uniformly at random across whatever's pooled for replay variety; tops up in the background (fire-and-forget, not awaited) when the pool for a key drops below 2.
 
-**If live generation is added back later** (a real LLM key becomes acceptable, or as an opt-in upgrade): keep it behind this same module interface — `getDialogue`/`grade`/`getHint`/`getDebrief` — so callers never know which mode is active. `prompt_version`/`model` already distinguish authored rows (`'authored-v2'` / `'authored'`) from anything a future generator would write, so the two can coexist in the same pool without a migration.
+**What's still true from the LLM-free phase, worth keeping in mind:** the rule-based fallback's paraphrase tolerance is narrower than the LLM path's — this only shows up when Gemini grading is actually down, which should be rare. Debriefs are still not LLM-written prose; the done screen is a plain score tally + full script recap (matches the cloned reference — see requirements.md §3).
 
 ---
 
 ### 2.4 Speech
 **Owns:** STT and TTS. The only context touching audio.
 
-**v1: browser-native only, no server surface.** Same reasoning as Content Generation's v1 pivot — a paid STT/TTS vendor is another API key and another ongoing cost for a context whose only job in v1 is "make sound." Implemented as a client-side hook (`src/modules/speech/useSpeech.ts`) over the Web Speech API: `SpeechSynthesis` for TTS, `SpeechRecognition` for STT. Zero cost, zero keys, works today — at the cost of being genuinely browser-dependent (`SpeechRecognition` doesn't exist in Firefox, and is unreliable in Safari) and lower voice quality than a real vendor.
+**Browser-native, no server surface — this one wasn't reversed.** A paid STT/TTS vendor is another API key and another ongoing cost for a context whose only job is "make sound," and unlike Content Generation, nothing about the product's actual scope forced the issue. Implemented as a client-side hook (`src/modules/speech/useSpeech.ts`) over the Web Speech API: `SpeechSynthesis` for TTS, `SpeechRecognition` for STT. Zero cost, zero keys — at the cost of being genuinely browser-dependent (`SpeechRecognition` doesn't exist in Firefox, and is unreliable in Safari) and lower voice quality than a real vendor.
 
 **Interface, concretely**
 ```
-speak(text, { voiceName?, rate?, lang? })  → plays audio via SpeechSynthesis
-listen({ lang? })                          → Promise<string>, via SpeechRecognition
+speak(text, { voiceName?, rate?, pitch?, lang? })  → plays audio via SpeechSynthesis
+listen({ lang? })                                  → Promise<string>, via SpeechRecognition
 ```
+
+**Per-speaker voice assignment.** Two speakers need to sound distinct for a listening drill to be followable at all. The pick screen enumerates `ja-*` voices via `speechSynthesis.getVoices()`, ranks known-good ones first, and lets the learner assign one to each speaker role (saved to `Identity`'s `profiles.voice_assignments`). If the device only has one Japanese voice, both speakers share it with a faked pitch offset (0.9 / 1.12) as a last-resort differentiator rather than sounding identical.
 
 **If a real vendor is added later:** the interface above is deliberately vendor-shaped (text→audio, audio→text) so swapping in a paid STT/TTS provider behind it is the transport change this doc's extraction philosophy (§0) is meant to make cheap — not a redesign of anything that calls it.
 
@@ -303,9 +312,7 @@ A distinct UI surface, not a mode of the drill:
 
 ### The conflict to resolve
 
-Two requirements are in tension: *"don't replay completed scenarios"* and *"generate fresh dialogue every run so it never repeats."* If dialogue is procedurally generated, a scenario is never truly exhausted.
-
-**v1 caveat:** dialogue is currently a fixed, hand-authored bank per `(scenario, variant, level)`, not live generation (§2.3) — so "never truly exhausted" is the target this design is built for, not a v1 guarantee. A learner who plays every authored dialogue for a variant/level *will* start seeing repeats. The granularity below still does its job (completion tracking, replay flagging); it's the supply of fresh dialogue behind it that's currently finite.
+Two requirements are in tension: *"don't replay completed scenarios"* and *"generate fresh dialogue every run so it never repeats."* Since dialogue is generated live again (§2.3 — a pool miss triggers a real Gemini call), a scenario is never truly exhausted in practice: completing every pooled dialogue for a `(scenario, variant, level)` just means the next play generates a new one rather than reusing an old one. This wasn't true during the LLM-free phase (fixed hand-authored bank, genuinely finite) — worth remembering if Content Generation ever goes LLM-free again.
 
 **Resolution: completion is tracked at `(scenario × variant × level)` granularity.**
 
@@ -323,13 +330,11 @@ When all variants at a level are complete, the scenario is marked exhausted for 
 | All variants complete at this level | Marked complete; shown with a **replay** option and a badge |
 | All variants complete at all levels ≤ current | Deprioritized in the list, not hidden |
 
-**Never hard-hide content.** A learner who wants to redo the izakaya should be able to. Replay is explicit (`POST /scenarios/{id}/reset`), and replayed sessions are flagged so they don't distort progression statistics.
+**Never hard-hide content.** A learner who wants to redo a scenario should be able to. `Catalog.resetScenario` picks one of the already-completed variants when `getNextVariant` comes back empty — this happens automatically inside `Session.startSession`, not via a separate user-facing "reset" action (the current pick screen has no explicit replay button; it's the same "Start listening" flow either way, flagged `is_replay` internally so it doesn't distort progression statistics).
 
 ### Variant supply
 
-Five variants per scenario will exhaust faster than expected. Two mitigations:
-1. Variants are **data, not code** — adding one is a database row, not a deploy.
-2. New dialogues (and new variants) are authored directly against the existing set — in v1 that's a person (or an AI assistant, during a build/content session) writing rows into `generated_dialogues`/`generated_lines`, not a runtime pipeline. If live generation is reintroduced later (§2.3), this becomes "propose, then review before activation" again.
+Five variants per scenario used to be the practical ceiling when dialogue was hand-authored. With live generation back, the ceiling is gone — each variant seed can produce unlimited distinct dialogues — but variants themselves are still **data, not code**, so adding a new *situation* to a scenario (not just a new dialogue for an existing one) is a database row, not a deploy.
 
 ### What counts as complete
 
@@ -381,8 +386,9 @@ async function onSessionCompleted(session: SessionSummary): Promise<void>;
 
 | Failure | Behavior |
 |---|---|
-| Dialogue pool empty for a key | `getDialogue` throws — there's no live fallback generation in v1. Fix is authoring more content for that `(scenario, variant, level)`, not a runtime recovery path. |
-| Grading/hint/debrief | Rule-based, in-process — nothing external to go down. (If live LLM generation is reintroduced per §2.3: same principle as below — reveal the answer with a note, record `verdict = null`, Progression ignores null verdicts.) |
+| Dialogue pool empty for a key AND live Gemini generation fails | `getDialogue` throws — no second fallback for generation itself (unlike grading, which has one). Rare in practice since a pool miss is the common case and just triggers a live call; this only bites if Gemini is down *and* nothing's pooled yet for that `(scenario, variant, level)`. |
+| Gemini grading call fails | Falls back to rule-based word-overlap grading in-process (§2.3) — nothing external to go down on that path. |
+| Hints | Client-rendered from data already loaded — no round-trip, nothing to fail. |
 | `SpeechRecognition` unsupported (Firefox, some Safari versions) | Fall back to typed input with the explicit JA/EN toggle. Fully functional, just not hands-free. |
 | Progression down | App works; recommendations silently absent. Never block a drill on an analytical service. |
 | Vocabulary down | Flashcard mode unavailable; attempts still recorded, cards backfilled from `attempts` on recovery. |

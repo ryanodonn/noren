@@ -11,24 +11,30 @@ export async function fetchLevels(db: DbClient) {
   return data;
 }
 
-export async function fetchScenariosWithVariants(db: DbClient) {
+export async function fetchLevelById(db: DbClient, levelId: LevelId) {
   const { data, error } = await db
-    .from("scenarios")
-    .select("*, scenario_variants(id, active)");
+    .from("levels")
+    .select("*")
+    .eq("id", levelId)
+    .single();
   if (error) throw error;
   return data;
 }
 
-export async function fetchCompletionForUser(
-  db: DbClient,
-  userId: string,
-  level: LevelId,
-) {
+export async function fetchAllScenarios(db: DbClient) {
+  const { data, error } = await db.from("scenarios").select("*");
+  if (error) throw error;
+  return data;
+}
+
+/** Across all levels — the picker shows one "explored before" signal per
+ * scenario, not a per-level breakdown (avoids refetching when the level
+ * selector changes client-side). */
+export async function fetchCompletionForUser(db: DbClient, userId: string) {
   const { data, error } = await db
     .from("scenario_completion")
     .select("scenario_id, variant_id")
-    .eq("user_id", userId)
-    .eq("level", level);
+    .eq("user_id", userId);
   if (error) throw error;
   return data;
 }
@@ -37,7 +43,7 @@ export async function fetchScenarioBySlugOrId(db: DbClient, idOrSlug: string) {
   const isUuid = /^[0-9a-f-]{36}$/i.test(idOrSlug);
   const { data, error } = await db
     .from("scenarios")
-    .select("*, seed_phrases(*)")
+    .select("*")
     .eq(isUuid ? "id" : "slug", idOrSlug)
     .single();
   if (error) throw error;

@@ -56,14 +56,13 @@ export async function startSession(
     }
   }
 
-  const scenario = await Catalog.getBriefing(supabase, params.scenarioId);
+  const [scenario, level, variant] = await Promise.all([
+    Catalog.getScenario(supabase, params.scenarioId),
+    Catalog.getLevel(supabase, params.level),
+    Catalog.getVariant(supabase, variantId),
+  ]);
 
-  const dialogue = await ContentGeneration.getDialogue(
-    supabase,
-    scenario,
-    { id: variantId },
-    params.level,
-  );
+  const dialogue = await ContentGeneration.getDialogue(supabase, scenario, variant, level);
 
   const session = await db.insertSession(supabase, {
     userId: params.userId,
@@ -82,7 +81,7 @@ export async function getSession(supabase: DbClient, sessionId: string) {
   const session = await db.getSession(supabase, sessionId);
   const [dialogue, scenario] = await Promise.all([
     ContentGeneration.getDialogueById(supabase, session.dialogue_id!),
-    Catalog.getBriefing(supabase, session.scenario_id),
+    Catalog.getScenario(supabase, session.scenario_id),
   ]);
   return { session, dialogue, scenario };
 }

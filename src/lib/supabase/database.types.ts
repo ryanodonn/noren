@@ -270,19 +270,25 @@ export type Database = {
           id: string
           label_en: string
           label_ja: string
+          rate: number | null
           sort_order: number
+          spec: string | null
         }
         Insert: {
           id: string
           label_en: string
           label_ja: string
+          rate?: number | null
           sort_order: number
+          spec?: string | null
         }
         Update: {
           id?: string
           label_en?: string
           label_ja?: string
+          rate?: number | null
           sort_order?: number
+          spec?: string | null
         }
         Relationships: []
       }
@@ -446,82 +452,35 @@ export type Database = {
       scenarios: {
         Row: {
           created_at: string
-          goal_text: string
           id: string
           line_label: string | null
           name_en: string
           name_ja: string
-          opener_text: string
-          persona_prompt: string
           slug: string
           speaker_a: string
           speaker_b: string
-          where_text: string
-          who_text: string
         }
         Insert: {
           created_at?: string
-          goal_text: string
           id?: string
           line_label?: string | null
           name_en: string
           name_ja: string
-          opener_text: string
-          persona_prompt: string
           slug: string
           speaker_a: string
           speaker_b: string
-          where_text: string
-          who_text: string
         }
         Update: {
           created_at?: string
-          goal_text?: string
           id?: string
           line_label?: string | null
           name_en?: string
           name_ja?: string
-          opener_text?: string
-          persona_prompt?: string
           slug?: string
           speaker_a?: string
           speaker_b?: string
-          where_text?: string
-          who_text?: string
         }
         Relationships: []
-      }
-      seed_phrases: {
-        Row: {
-          en: string
-          id: string
-          ja: string
-          romaji: string
-          scenario_id: string
-        }
-        Insert: {
-          en: string
-          id?: string
-          ja: string
-          romaji: string
-          scenario_id: string
-        }
-        Update: {
-          en?: string
-          id?: string
-          ja?: string
-          romaji?: string
-          scenario_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "seed_phrases_scenario_id_fkey"
-            columns: ["scenario_id"]
-            isOneToOne: false
-            referencedRelation: "scenarios"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       sessions: {
         Row: {

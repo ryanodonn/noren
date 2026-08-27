@@ -38,12 +38,32 @@ export async function submitAttempt(params: {
   return { verdict, note };
 }
 
-export async function requestHint(params: { lineId: string; hintsUsedSoFar: number }) {
+export async function skipAttempt(params: {
+  sessionId: string;
+  lineId: string;
+  seq: number;
+  hintsUsed: number;
+  latencyMs: number;
+}) {
   const supabase = await createClient();
-  return ContentGeneration.getHint(supabase, {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  await Session.recordAttempt(supabase, {
+    userId: user.id,
+    sessionId: params.sessionId,
     lineId: params.lineId,
-    hintsUsedSoFar: params.hintsUsedSoFar,
+    seq: params.seq,
+    userAnswer: null,
+    verdict: "missed",
+    hintsUsed: params.hintsUsed,
+    note: "Skipped.",
+    latencyMs: params.latencyMs,
   });
+
+  return { verdict: "missed" as const, note: "Skipped." };
 }
 
 export async function lookupToken(params: {

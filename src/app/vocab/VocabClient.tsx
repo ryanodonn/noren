@@ -28,23 +28,23 @@ export function VocabClient({ cards }: { cards: Card[] }) {
 
   if (!card) {
     return (
-      <div className="rounded border p-6 text-center text-neutral-500">
+      <div className="p-6 text-center text-noren-dim bg-noren-panel">
         Nothing due right now. Come back later.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 rounded border p-8 text-center">
-      <p className="text-xs text-neutral-400">
+    <div className="flex flex-col items-center gap-6 p-8 text-center bg-noren-panel">
+      <p className="text-xs text-noren-dim">
         Card {index + 1} of {cards.length}
       </p>
 
-      <p className="text-3xl">{card.token_ja}</p>
+      <p className="jp text-3xl">{card.token_ja}</p>
 
       <button
         onClick={() => speak(card.token_ja, { lang: "ja-JP" })}
-        className="rounded border px-3 py-1 text-sm hover:bg-neutral-50"
+        className="px-3 py-1 text-sm border border-noren-edge text-noren-dim"
       >
         ▶ Play
       </button>
@@ -52,43 +52,46 @@ export function VocabClient({ cards }: { cards: Card[] }) {
       {!revealed ? (
         <button
           onClick={() => setRevealed(true)}
-          className="rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
+          className="px-4 py-2 text-sm font-semibold uppercase tracking-[0.15em] bg-noren-amber text-noren-bg"
         >
           Reveal
         </button>
       ) : (
-        <div className="flex flex-col items-center gap-4">
-          <div className="text-sm text-neutral-600">
-            {card.kana && <p>{card.kana}</p>}
+        <div className="flex flex-col items-center gap-4 rise">
+          <div className="text-sm text-noren-dim">
+            {card.kana && <p className="jp">{card.kana}</p>}
             {card.romaji && <p>{card.romaji}</p>}
-            {card.en && <p className="font-medium">{card.en}</p>}
+            {card.en && <p className="font-medium text-noren-ink">{card.en}</p>}
             {card.context_sentence_ja && (
-              <p className="mt-2 text-neutral-400">&ldquo;{card.context_sentence_ja}&rdquo;</p>
+              <p className="jp mt-2">&ldquo;{card.context_sentence_ja}&rdquo;</p>
             )}
           </div>
 
           <div className="flex gap-2">
             <button
               onClick={() => onRate("again")}
-              className="rounded bg-red-100 px-3 py-1.5 text-sm text-red-800 hover:bg-red-200"
+              className="px-3 py-1.5 text-xs uppercase tracking-[0.15em]"
+              style={{ background: "#3a1414", color: "var(--noren-rose)" }}
             >
               Again
             </button>
             <button
               onClick={() => onRate("hard")}
-              className="rounded bg-amber-100 px-3 py-1.5 text-sm text-amber-800 hover:bg-amber-200"
+              className="px-3 py-1.5 text-xs uppercase tracking-[0.15em]"
+              style={{ background: "#3a2f0e", color: "var(--noren-amber)" }}
             >
               Hard
             </button>
             <button
               onClick={() => onRate("good")}
-              className="rounded bg-green-100 px-3 py-1.5 text-sm text-green-800 hover:bg-green-200"
+              className="px-3 py-1.5 text-xs uppercase tracking-[0.15em]"
+              style={{ background: "#123a35", color: "var(--noren-cyan)" }}
             >
               Good
             </button>
             <button
               onClick={() => onRate("easy")}
-              className="rounded bg-blue-100 px-3 py-1.5 text-sm text-blue-800 hover:bg-blue-200"
+              className="px-3 py-1.5 text-xs uppercase tracking-[0.15em] bg-noren-amber text-noren-bg"
             >
               Easy
             </button>

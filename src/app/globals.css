@@ -1,26 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap");
 @import "tailwindcss";
 
+/*
+ * Dark-only, deliberately — this is a single visual identity, not a
+ * light/dark-adaptive theme. Matches the cloned reference exactly.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --noren-bg: #0e1614;
+  --noren-panel: #16211e;
+  --noren-edge: #26332f;
+  --noren-ink: #eef2ee;
+  --noren-dim: #7e918b;
+  --noren-amber: #f5c518;
+  --noren-cyan: #63d2c3;
+  --noren-rose: #e2725b;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-noren-bg: var(--noren-bg);
+  --color-noren-panel: var(--noren-panel);
+  --color-noren-edge: var(--noren-edge);
+  --color-noren-ink: var(--noren-ink);
+  --color-noren-dim: var(--noren-dim);
+  --color-noren-amber: var(--noren-amber);
+  --color-noren-cyan: var(--noren-cyan);
+  --color-noren-rose: var(--noren-rose);
+  --font-board: "Barlow Condensed", system-ui, sans-serif;
+  --font-jp: "Zen Kaku Gothic New", system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--noren-bg);
+  color: var(--noren-ink);
+  font-family: var(--font-board);
+}
+
+/* 1px hairline "grid" list dividers — a background-color trick (gap between
+   sibling rows shows through), not borders. Wrap a list of rows in
+   `.grid-list` and give it `gap-px` in the row markup. */
+.grid-list {
+  background: var(--noren-edge);
+}
+
+.jp {
+  font-family: var(--font-jp);
+}
+
+.tok {
+  border-bottom: 1px dotted transparent;
+  cursor: pointer;
+}
+.tok:hover {
+  border-bottom-color: var(--noren-amber);
+  color: var(--noren-amber);
+}
+
+.rise {
+  animation: rise 0.25s ease-out 1;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pulse {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .pulse {
+    animation: none;
+  }
 }

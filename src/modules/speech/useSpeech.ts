@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 // cost) — see docs/requirements.md decisions. Swappable later behind this
 // same hook interface if voice quality ever demands a real vendor.
 
-type SpeakOptions = { voiceName?: string; rate?: number; lang?: string };
+type SpeakOptions = { voiceName?: string; rate?: number; lang?: string; pitch?: number };
 type ListenOptions = { lang?: string };
 
 export function useSpeech() {
@@ -18,6 +18,7 @@ export function useSpeech() {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = opts?.lang ?? "ja-JP";
     utterance.rate = opts?.rate ?? 1;
+    if (opts?.pitch !== undefined) utterance.pitch = opts.pitch;
 
     if (opts?.voiceName) {
       const voice = window.speechSynthesis

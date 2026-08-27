@@ -13,8 +13,9 @@ export default async function VocabPage() {
   const cards = await Vocabulary.getDue(supabase, user.id);
 
   return (
-    <main className="mx-auto max-w-md flex-1 px-6 py-10">
-      <h1 className="mb-6 text-xl font-semibold">Flashcards</h1>
+    <main className="board mx-auto max-w-md flex-1 px-6 py-10">
+      <div className="text-xs tracking-[0.3em] mb-1 text-noren-amber">たんご</div>
+      <h1 className="mb-6 text-3xl font-semibold uppercase tracking-wide">Flashcards</h1>
       <VocabClient cards={cards} />
     </main>
   );

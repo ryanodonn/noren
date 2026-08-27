@@ -11,19 +11,22 @@ export async function NavBar() {
   if (!user) return null;
 
   return (
-    <header className="flex items-center justify-between border-b px-6 py-3">
-      <Link href="/" className="font-semibold">
-        暖簾 Noren
+    <header
+      className="flex items-center justify-between border-b px-6 py-3"
+      style={{ borderColor: "var(--noren-edge)" }}
+    >
+      <Link href="/" className="jp text-lg">
+        暖簾 <span className="text-noren-dim">Noren</span>
       </Link>
-      <nav className="flex items-center gap-4 text-sm">
-        <Link href="/" className="hover:underline">
-          Scenarios
+      <nav className="flex items-center gap-4 text-xs uppercase tracking-[0.15em]">
+        <Link href="/" className="hover:text-noren-amber">
+          Pick
         </Link>
-        <Link href="/vocab" className="hover:underline">
+        <Link href="/vocab" className="hover:text-noren-amber">
           Vocab
         </Link>
         <form action={logout}>
-          <button type="submit" className="text-neutral-500 hover:underline">
+          <button type="submit" className="text-noren-dim hover:text-noren-amber">
             Sign out
           </button>
         </form>

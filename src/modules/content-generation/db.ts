@@ -1,29 +1,42 @@
 import "server-only";
 import type { DbClient } from "@/lib/supabase/types";
 import type { LevelId } from "@/lib/types";
-
-// v2: translation-direction grading (acceptable_en) replaced the old
-// production-direction grading (acceptable_ja/acceptable_romaji) — see
-// docs/services.md §2.3. Bumped so the pool never mixes old/new-shaped rows.
-export const CONTENT_VERSION = "authored-v2";
+import { PROMPT_VERSION } from "./prompts";
 
 type PoolKey = { scenarioId: string; variantId: string; level: LevelId };
 
-/** Picks randomly among the authored pool for this key, for replay variety. */
+export const POOL_MIN = 2;
+
+/**
+ * Picks randomly among the pool for this key, for replay variety. Not
+ * filtered by prompt_version — old hand-authored rows and new
+ * Gemini-generated rows share one pool; prompt_version is provenance
+ * metadata, not a partition key (see docs/services.md §2.3).
+ */
 export async function findPooledDialogue(db: DbClient, key: PoolKey) {
   const { data, error } = await db
     .from("generated_dialogues")
     .select("id")
     .eq("scenario_id", key.scenarioId)
     .eq("variant_id", key.variantId)
-    .eq("level", key.level)
-    .eq("prompt_version", CONTENT_VERSION);
+    .eq("level", key.level);
   if (error) throw error;
   if (data.length === 0) return null;
   return data[Math.floor(Math.random() * data.length)];
 }
 
-export type AuthoredLine = {
+export async function countPoolSize(db: DbClient, key: PoolKey) {
+  const { count, error } = await db
+    .from("generated_dialogues")
+    .select("id", { count: "exact", head: true })
+    .eq("scenario_id", key.scenarioId)
+    .eq("variant_id", key.variantId)
+    .eq("level", key.level);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export type PoolLine = {
   speaker: "a" | "b";
   ja: string;
   kana: string;
@@ -37,7 +50,7 @@ export type AuthoredLine = {
   acceptable_en?: string[];
 };
 
-/** Seeding path — used to author new pool content (see scripts/seed-content). */
+/** Shared insert path for both hand-authored seeding and live Gemini generation. */
 export async function insertDialogueWithLines(
   db: DbClient,
   params: {
@@ -45,7 +58,9 @@ export async function insertDialogueWithLines(
     variantId: string;
     level: LevelId;
     setting: string | null;
-    lines: AuthoredLine[];
+    model: string;
+    promptVersion?: string;
+    lines: PoolLine[];
   },
 ) {
   const { data: dialogue, error: dialogueError } = await db
@@ -54,9 +69,9 @@ export async function insertDialogueWithLines(
       scenario_id: params.scenarioId,
       variant_id: params.variantId,
       level: params.level,
-      model: "authored",
+      model: params.model,
       setting: params.setting,
-      prompt_version: CONTENT_VERSION,
+      prompt_version: params.promptVersion ?? PROMPT_VERSION,
     })
     .select("id")
     .single();

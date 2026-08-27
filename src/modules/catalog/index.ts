@@ -8,54 +8,51 @@ export type ScenarioListItem = {
   slug: string;
   nameJa: string;
   nameEn: string;
-  status: "unplayed" | "in_progress" | "complete";
-  completedVariantCount: number;
-  activeVariantCount: number;
+  lineLabel: string | null;
+  speakerA: string;
+  speakerB: string;
+  /** Completions across all levels/variants — "explored before", not a
+   * per-level status (see catalog/db.ts fetchCompletionForUser). */
+  timesCompleted: number;
 };
 
 export async function listLevels(supabase: DbClient) {
   return db.fetchLevels(supabase);
 }
 
-/** Scenarios for a level, annotated with this user's completion state. */
+export async function getLevel(supabase: DbClient, levelId: LevelId) {
+  return db.fetchLevelById(supabase, levelId);
+}
+
+/** All scenarios, annotated with how many times this user has completed
+ * each (any level/variant — see ScenarioListItem). */
 export async function listScenarios(
   supabase: DbClient,
   userId: string,
-  level: LevelId,
 ): Promise<ScenarioListItem[]> {
   const [scenarios, completions] = await Promise.all([
-    db.fetchScenariosWithVariants(supabase),
-    db.fetchCompletionForUser(supabase, userId, level),
+    db.fetchAllScenarios(supabase),
+    db.fetchCompletionForUser(supabase, userId),
   ]);
 
-  const completedVariantIds = new Set(completions.map((c) => c.variant_id));
+  const completionCounts = new Map<string, number>();
+  for (const c of completions) {
+    completionCounts.set(c.scenario_id, (completionCounts.get(c.scenario_id) ?? 0) + 1);
+  }
 
-  return scenarios.map((s) => {
-    const activeVariants = s.scenario_variants.filter((v) => v.active);
-    const completedCount = activeVariants.filter((v) =>
-      completedVariantIds.has(v.id),
-    ).length;
-
-    const status: ScenarioListItem["status"] =
-      completedCount === 0
-        ? "unplayed"
-        : completedCount === activeVariants.length
-          ? "complete"
-          : "in_progress";
-
-    return {
-      id: s.id,
-      slug: s.slug,
-      nameJa: s.name_ja,
-      nameEn: s.name_en,
-      status,
-      completedVariantCount: completedCount,
-      activeVariantCount: activeVariants.length,
-    };
-  });
+  return scenarios.map((s) => ({
+    id: s.id,
+    slug: s.slug,
+    nameJa: s.name_ja,
+    nameEn: s.name_en,
+    lineLabel: s.line_label,
+    speakerA: s.speaker_a,
+    speakerB: s.speaker_b,
+    timesCompleted: completionCounts.get(s.id) ?? 0,
+  }));
 }
 
-export async function getBriefing(supabase: DbClient, idOrSlug: string) {
+export async function getScenario(supabase: DbClient, idOrSlug: string) {
   return db.fetchScenarioBySlugOrId(supabase, idOrSlug);
 }
 
