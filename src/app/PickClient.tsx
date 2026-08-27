@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useSpeech } from "@/modules/speech";
-import { startSessionAction, saveVoiceAssignments } from "./actions";
+import { saveVoiceAssignments } from "./actions";
+import { useStartSession } from "./useStartSession";
 
 type Level = {
   id: string;
@@ -40,14 +41,13 @@ export function PickClient(props: {
 }) {
   const { levels, scenarios, defaultLevelId, savedVoiceA, savedVoiceB } = props;
   const { speak } = useSpeech();
-  const [isPending, startTransition] = useTransition();
+  const { start: startSession, isPending, error, elapsedSec } = useStartSession();
 
   const [levelId, setLevelId] = useState(defaultLevelId);
   const [scenarioId, setScenarioId] = useState(scenarios[0]?.id ?? "");
   const [jaVoices, setJaVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voiceA, setVoiceA] = useState<string | null>(savedVoiceA);
   const [voiceB, setVoiceB] = useState<string | null>(savedVoiceB);
-  const [error, setError] = useState("");
 
   const scenario = scenarios.find((s) => s.id === scenarioId) ?? scenarios[0];
 
@@ -79,17 +79,6 @@ export function PickClient(props: {
   function onVoiceBChange(name: string) {
     setVoiceB(name);
     saveVoiceAssignments({ voiceA, voiceB: name });
-  }
-
-  function start() {
-    setError("");
-    startTransition(async () => {
-      try {
-        await startSessionAction({ scenarioId, level: levelId });
-      } catch {
-        setError("Couldn't build the dialogue. Try again.");
-      }
-    });
   }
 
   return (
@@ -209,12 +198,27 @@ export function PickClient(props: {
       {error && <div className="text-sm mb-4 text-noren-rose">{error}</div>}
 
       <button
-        onClick={start}
+        onClick={() => startSession({ scenarioId, level: levelId })}
         disabled={isPending || !scenarioId}
         className="w-full py-4 text-lg font-semibold uppercase tracking-[0.2em] disabled:opacity-50 bg-noren-amber text-noren-bg"
       >
-        {isPending ? <span className="pulse">Writing the dialogue…</span> : "Start listening"}
+        {isPending ? (
+          <span className="pulse">Writing the dialogue… ({elapsedSec}s)</span>
+        ) : (
+          "Start listening"
+        )}
       </button>
+      {isPending && (
+        <>
+          <div className="h-1 mt-2 overflow-hidden bg-noren-panel">
+            <div className="h-full w-1/3 bg-noren-amber loading-bar" />
+          </div>
+          <p className="text-xs mt-2 text-noren-dim">
+            Usually 5–15s for a scene played before, up to 30s the first time. New scenes take
+            longer to write than replays.
+          </p>
+        </>
+      )}
     </>
   );
 }

@@ -123,6 +123,8 @@ grade(lineId, userAnswer)              → Gemini grades leniently; on failure, 
 
 **Free tier quota is a real constraint, not just cost.** Google AI Studio's free tier caps `gemini-3.6-flash` at roughly 20 generate-content requests/day at the time of writing — hit during ordinary manual testing, not load. Every pool miss (§3) spends one of those; a thin day of testing across several new scenario/level combos can exhaust it. Worth watching if usage grows — see the failure-modes table (§5) for what happens when a request fails.
 
+**Every "start a session" entry point shares one client hook (`src/app/useStartSession.ts`)** rather than each screen handling generation failure differently. It wraps `startSessionAction` in try/catch with an elapsed-seconds counter (surfaced as "Writing the dialogue… (Ns)" plus an indeterminate progress bar — a 10-30s wait with no feedback reads as broken) and turns any failure into an inline error message instead of an uncaught exception. The Pick screen and the Done screen's "New dialogue, same level" retry both use it; the Done screen previously called a bare server action from a plain `<form>` with no error handling at all, so a failure (e.g. the free-tier quota above) crashed to Next's default error page instead of showing a message.
+
 **Hints, concretely:** three tiers, client-rendered from data already loaded (no round-trip) and **stacking** — at tier 2 you see both tier 1 and tier 2, not just tier 2:
 1. `gist` — a short nudge ("asking about the price") that must not give away the translation
 2. `key_ja`/`key_romaji`/`key_en` — the single hardest word in the line, glossed

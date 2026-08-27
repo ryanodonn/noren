@@ -5,8 +5,9 @@ import * as Session from "@/modules/session";
 import * as Progression from "@/modules/progression";
 import * as Catalog from "@/modules/catalog";
 import * as Identity from "@/modules/identity";
-import { acceptRecommendation, dismissRecommendation, startSessionAction } from "@/app/actions";
+import { acceptRecommendation, dismissRecommendation } from "@/app/actions";
 import { ScriptRecap } from "./ScriptRecap";
+import { RetryButton } from "./RetryButton";
 
 export default async function DonePage({ params }: PageProps<"/sessions/[id]/debrief">) {
   const { id } = await params;
@@ -37,11 +38,6 @@ export default async function DonePage({ params }: PageProps<"/sessions/[id]/deb
       ? `You're ready for ${toLevel?.label_ja} — ${recommendation.reason}.`
       : `Want to drop back to ${toLevel?.label_ja} for a bit? (${recommendation.reason})`;
   }
-
-  const replaySameLevel = async () => {
-    "use server";
-    await startSessionAction({ scenarioId: scenario.id, level: session.level });
-  };
 
   return (
     <main className="board min-h-screen p-5 sm:p-8">
@@ -103,12 +99,8 @@ export default async function DonePage({ params }: PageProps<"/sessions/[id]/deb
           voiceB={savedVoices.b ?? null}
         />
 
-        <div className="flex gap-3">
-          <form action={replaySameLevel} className="flex-1">
-            <button className="w-full py-4 font-semibold uppercase tracking-[0.2em] bg-noren-amber text-noren-bg">
-              New dialogue, same level
-            </button>
-          </form>
+        <div className="flex gap-3 items-start">
+          <RetryButton scenarioId={scenario.id} level={session.level} />
           <Link
             href="/"
             className="px-6 py-4 text-xs uppercase tracking-[0.2em] border border-noren-edge text-noren-dim"
