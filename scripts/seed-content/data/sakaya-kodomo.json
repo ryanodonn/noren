@@ -1,0 +1,378 @@
+[
+  {
+    "scenario_slug": "sakaya",
+    "variant_id": "9266f1ab-7b13-4cde-b5a2-88dbd091671c",
+    "level": "kodomo",
+    "setting": "A customer asks where a brewery is from.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "この酒はどこの蔵ですか。", "kana": "このさけはどこのくらですか。", "romaji": "Kono sake wa doko no kura desu ka.",
+        "en": "Where's this sake's brewery from?", "gist": "asking about the brewery",
+        "key_ja": "蔵", "key_romaji": "kura", "key_en": "brewery",
+        "tokens": [
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"酒","kana":"さけ","romaji":"sake","en":"sake"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"どこの","kana":"どこの","romaji":"doko no","en":"which"},
+          {"ja":"蔵","kana":"くら","romaji":"kura","en":"brewery"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where's this sake's brewery from?", "What brewery is this from?"]
+      },
+      {
+        "speaker": "a", "ja": "これは京都の蔵です。", "kana": "これはきょうとのくらです。", "romaji": "Kore wa Kyouto no kura desu.",
+        "en": "This is from a Kyoto brewery.", "gist": "naming the origin",
+        "key_ja": "京都", "key_romaji": "Kyouto", "key_en": "Kyoto",
+        "tokens": [
+          {"ja":"これ","kana":"これ","romaji":"kore","en":"this"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"京都の","kana":"きょうとの","romaji":"Kyouto no","en":"Kyoto's"},
+          {"ja":"蔵","kana":"くら","romaji":"kura","en":"brewery"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["This is from a Kyoto brewery.", "This one's from Kyoto."]
+      },
+      {
+        "speaker": "b", "ja": "有名な蔵ですか。", "kana": "ゆうめいなくらですか。", "romaji": "Yuumei na kura desu ka.",
+        "en": "Is it a famous brewery?", "gist": "asking about its reputation",
+        "key_ja": "有名", "key_romaji": "yuumei", "key_en": "famous",
+        "tokens": [
+          {"ja":"有名な","kana":"ゆうめいな","romaji":"yuumei na","en":"famous"},
+          {"ja":"蔵","kana":"くら","romaji":"kura","en":"brewery"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is it a famous brewery?", "Is that a well-known brewery?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、とても有名です。", "kana": "はい、とてもゆうめいです。", "romaji": "Hai, totemo yuumei desu.",
+        "en": "Yes, very famous.", "gist": "confirming its fame",
+        "key_ja": "とても", "key_romaji": "totemo", "key_en": "very",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"とても","kana":"とても","romaji":"totemo","en":"very"},
+          {"ja":"有名","kana":"ゆうめい","romaji":"yuumei","en":"famous"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, very famous.", "Yes, quite well-known."]
+      },
+      {
+        "speaker": "b", "ja": "じゃあ、これをください。", "kana": "じゃあ、これをください。", "romaji": "Jaa, kore o kudasai.",
+        "en": "Then, this one please.", "gist": "making the choice",
+        "key_ja": "これ", "key_romaji": "kore", "key_en": "this one",
+        "tokens": [
+          {"ja":"じゃあ、","kana":"じゃあ、","romaji":"Jaa,","en":"Then,"},
+          {"ja":"これ","kana":"これ","romaji":"kore","en":"this"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"ください。","kana":"ください。","romaji":"kudasai.","en":"please"}
+        ],
+        "acceptable_en": ["Then, this one please.", "I'll take this one then."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "sakaya",
+    "variant_id": "c3531aed-8d2e-4aad-9733-ed6abc870aa7",
+    "level": "kodomo",
+    "setting": "A customer asks for a dry sake recommendation.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "辛口のお酒はありますか。", "kana": "からくちのおさけはありますか。", "romaji": "Karakuchi no osake wa arimasu ka.",
+        "en": "Do you have dry sake?", "gist": "asking for dry sake",
+        "key_ja": "辛口", "key_romaji": "karakuchi", "key_en": "dry (sake)",
+        "tokens": [
+          {"ja":"辛口の","kana":"からくちの","romaji":"karakuchi no","en":"dry"},
+          {"ja":"お酒","kana":"おさけ","romaji":"osake","en":"sake"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"あります","kana":"あります","romaji":"arimasu","en":"is there"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Do you have dry sake?", "Is there a dry one?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、これが辛口です。", "kana": "はい、これがからくちです。", "romaji": "Hai, kore ga karakuchi desu.",
+        "en": "Yes, this is dry.", "gist": "recommending one",
+        "key_ja": "辛口", "key_romaji": "karakuchi", "key_en": "dry",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"これ","kana":"これ","romaji":"kore","en":"this"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"辛口","kana":"からくち","romaji":"karakuchi","en":"dry"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, this is dry.", "Yes, this one is dry."]
+      },
+      {
+        "speaker": "b", "ja": "甘くないですか。", "kana": "あまくないですか。", "romaji": "Amakunai desu ka.",
+        "en": "It's not sweet?", "gist": "confirming it's not sweet",
+        "key_ja": "甘くない", "key_romaji": "amakunai", "key_en": "not sweet",
+        "tokens": [
+          {"ja":"甘くない","kana":"あまくない","romaji":"amakunai","en":"not sweet"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["It's not sweet?", "Is it not sweet at all?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、大丈夫です。", "kana": "はい、だいじょうぶです。", "romaji": "Hai, daijoubu desu.",
+        "en": "Yes, it's fine.", "gist": "reassuring the customer",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, it's fine.", "Yes, not sweet at all."]
+      },
+      {
+        "speaker": "b", "ja": "じゃあ、それをお願いします。", "kana": "じゃあ、それをおねがいします。", "romaji": "Jaa, sore o onegaishimasu.",
+        "en": "Then, that one please.", "gist": "deciding on the order",
+        "key_ja": "それ", "key_romaji": "sore", "key_en": "that one",
+        "tokens": [
+          {"ja":"じゃあ、","kana":"じゃあ、","romaji":"Jaa,","en":"Then,"},
+          {"ja":"それ","kana":"それ","romaji":"sore","en":"that"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["Then, that one please.", "I'll go with that then."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "sakaya",
+    "variant_id": "ceac91c8-1db8-44f4-bf05-5a6cf2b97398",
+    "level": "kodomo",
+    "setting": "A customer asks whether a bottle should be chilled.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "このお酒は冷たい方がいいですか。", "kana": "このおさけはつめたいほうがいいですか。", "romaji": "Kono osake wa tsumetai hou ga ii desu ka.",
+        "en": "Is it better cold?", "gist": "asking about serving temperature",
+        "key_ja": "冷たい方", "key_romaji": "tsumetai hou", "key_en": "the cold way",
+        "tokens": [
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"お酒","kana":"おさけ","romaji":"osake","en":"sake"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"冷たい方","kana":"つめたいほう","romaji":"tsumetai hou","en":"the cold way"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"いい","kana":"いい","romaji":"ii","en":"good"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is it better cold?", "Should this be served cold?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、冷たい方がおいしいです。", "kana": "はい、つめたいほうがおいしいです。", "romaji": "Hai, tsumetai hou ga oishii desu.",
+        "en": "Yes, it's tastier cold.", "gist": "recommending cold",
+        "key_ja": "おいしい", "key_romaji": "oishii", "key_en": "delicious",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"冷たい方","kana":"つめたいほう","romaji":"tsumetai hou","en":"the cold way"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"おいしい","kana":"おいしい","romaji":"oishii","en":"delicious"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, it's tastier cold.", "Yes, cold is better."]
+      },
+      {
+        "speaker": "b", "ja": "常温でも大丈夫ですか。", "kana": "じょうおんでもだいじょうぶですか。", "romaji": "Jouon demo daijoubu desu ka.",
+        "en": "Is room temperature also fine?", "gist": "asking about an alternative",
+        "key_ja": "常温", "key_romaji": "jouon", "key_en": "room temperature",
+        "tokens": [
+          {"ja":"常温","kana":"じょうおん","romaji":"jouon","en":"room temperature"},
+          {"ja":"でも","kana":"でも","romaji":"demo","en":"also/even"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is room temperature also fine?", "Can it be room temperature too?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、大丈夫です。", "kana": "はい、だいじょうぶです。", "romaji": "Hai, daijoubu desu.",
+        "en": "Yes, that's fine.", "gist": "confirming that's fine",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, that's fine.", "Yes, either way is fine."]
+      },
+      {
+        "speaker": "b", "ja": "わかります。", "kana": "わかります。", "romaji": "Wakarimasu.",
+        "en": "I understand.", "gist": "acknowledging the info",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [{"ja":"わかります。","kana":"わかります。","romaji":"Wakarimasu.","en":"I understand."}],
+        "acceptable_en": ["I understand.", "Got it."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "sakaya",
+    "variant_id": "d340f504-ac05-45c4-a2e2-ee8e248a281d",
+    "level": "kodomo",
+    "setting": "A customer buys a bottle as a gift and asks for wrapping.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "これをプレゼントにしたいです。", "kana": "これをプレゼントにしたいです。", "romaji": "Kore o purezento ni shitai desu.",
+        "en": "I want to make this a present.", "gist": "explaining it's a gift",
+        "key_ja": "プレゼント", "key_romaji": "purezento", "key_en": "present",
+        "tokens": [
+          {"ja":"これ","kana":"これ","romaji":"kore","en":"this"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"プレゼントに","kana":"プレゼントに","romaji":"purezento ni","en":"as a present"},
+          {"ja":"したい","kana":"したい","romaji":"shitai","en":"want to make"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":""}
+        ],
+        "acceptable_en": ["I want to make this a present.", "This is a gift."]
+      },
+      {
+        "speaker": "a", "ja": "はい、大丈夫です。", "kana": "はい、だいじょうぶです。", "romaji": "Hai, daijoubu desu.",
+        "en": "Yes, that's fine.", "gist": "confirming that's fine",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, that's fine.", "Yes, no problem."]
+      },
+      {
+        "speaker": "b", "ja": "包み紙はありますか。", "kana": "つつみがみはありますか。", "romaji": "Tsutsumigami wa arimasu ka.",
+        "en": "Is there wrapping paper?", "gist": "asking about wrapping",
+        "key_ja": "包み紙", "key_romaji": "tsutsumigami", "key_en": "wrapping paper",
+        "tokens": [
+          {"ja":"包み紙","kana":"つつみがみ","romaji":"tsutsumigami","en":"wrapping paper"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"あります","kana":"あります","romaji":"arimasu","en":"is there"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is there wrapping paper?", "Do you have gift wrap?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、あります。", "kana": "はい、あります。", "romaji": "Hai, arimasu.",
+        "en": "Yes, there is.", "gist": "confirming wrapping is available",
+        "key_ja": "あります", "key_romaji": "arimasu", "key_en": "there is",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"あります。","kana":"あります。","romaji":"arimasu.","en":"there is"}
+        ],
+        "acceptable_en": ["Yes, there is.", "Yes, we have some."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the shop owner",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "sakaya",
+    "variant_id": "e88d43d9-9f3c-4dac-828f-1a44eb468d1a",
+    "level": "kodomo",
+    "setting": "A customer asks what pairs with a dish they're cooking.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "魚料理に合うお酒はありますか。", "kana": "さかなりょうりにあうおさけはありますか。", "romaji": "Sakana ryouri ni au osake wa arimasu ka.",
+        "en": "Is there sake that pairs with fish dishes?", "gist": "asking for a pairing",
+        "key_ja": "合う", "key_romaji": "au", "key_en": "goes well with",
+        "tokens": [
+          {"ja":"魚料理","kana":"さかなりょうり","romaji":"sakana ryouri","en":"fish dish"},
+          {"ja":"に","kana":"に","romaji":"ni","en":"with"},
+          {"ja":"合う","kana":"あう","romaji":"au","en":"goes well"},
+          {"ja":"お酒","kana":"おさけ","romaji":"osake","en":"sake"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"あります","kana":"あります","romaji":"arimasu","en":"is there"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is there sake that pairs with fish dishes?", "What sake goes with fish?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、この酒が合います。", "kana": "はい、このさけがあいます。", "romaji": "Hai, kono sake ga aimasu.",
+        "en": "Yes, this sake pairs well.", "gist": "recommending a pairing",
+        "key_ja": "合います", "key_romaji": "aimasu", "key_en": "goes well with",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"酒","kana":"さけ","romaji":"sake","en":"sake"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"合います。","kana":"あいます。","romaji":"aimasu.","en":"goes well"}
+        ],
+        "acceptable_en": ["Yes, this sake pairs well.", "Yes, this one goes well with it."]
+      },
+      {
+        "speaker": "b", "ja": "辛口ですか、甘口ですか。", "kana": "からくちですか、あまくちですか。", "romaji": "Karakuchi desu ka, amakuchi desu ka.",
+        "en": "Is it dry or sweet?", "gist": "asking the taste profile",
+        "key_ja": "甘口", "key_romaji": "amakuchi", "key_en": "sweet (sake)",
+        "tokens": [
+          {"ja":"辛口","kana":"からくち","romaji":"karakuchi","en":"dry"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か、","kana":"か、","romaji":"ka,","en":"or"},
+          {"ja":"甘口","kana":"あまくち","romaji":"amakuchi","en":"sweet"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is it dry or sweet?", "Dry or sweet?"]
+      },
+      {
+        "speaker": "a", "ja": "辛口です。", "kana": "からくちです。", "romaji": "Karakuchi desu.",
+        "en": "It's dry.", "gist": "answering the question",
+        "key_ja": "辛口", "key_romaji": "karakuchi", "key_en": "dry",
+        "tokens": [
+          {"ja":"辛口","kana":"からくち","romaji":"karakuchi","en":"dry"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["It's dry.", "This one's dry."]
+      },
+      {
+        "speaker": "b", "ja": "じゃあ、それをください。", "kana": "じゃあ、それをください。", "romaji": "Jaa, sore o kudasai.",
+        "en": "Then, that one please.", "gist": "making the choice",
+        "key_ja": "それ", "key_romaji": "sore", "key_en": "that one",
+        "tokens": [
+          {"ja":"じゃあ、","kana":"じゃあ、","romaji":"Jaa,","en":"Then,"},
+          {"ja":"それ","kana":"それ","romaji":"sore","en":"that"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"ください。","kana":"ください。","romaji":"kudasai.","en":"please"}
+        ],
+        "acceptable_en": ["Then, that one please.", "I'll take that one then."]
+      }
+    ]
+  }
+]

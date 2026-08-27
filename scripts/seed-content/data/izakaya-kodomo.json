@@ -1,0 +1,296 @@
+[
+  {
+    "scenario_slug": "izakaya",
+    "variant_id": "2e2f83c5-1d0c-4749-a73d-1a1b085e7e72",
+    "level": "kodomo",
+    "setting": "A customer orders the first round of drinks at an izakaya.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome (to a customer)",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "ビールをください。", "kana": "ビールをください。", "romaji": "Biiru o kudasai.",
+        "en": "Beer, please.", "gist": "ordering a drink",
+        "key_ja": "ビール", "key_romaji": "biiru", "key_en": "beer",
+        "tokens": [
+          {"ja":"ビール","kana":"ビール","romaji":"biiru","en":"beer"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"ください。","kana":"ください。","romaji":"kudasai.","en":"please"}
+        ],
+        "acceptable_en": ["Beer, please.", "I'll have a beer."]
+      },
+      {
+        "speaker": "a", "ja": "はい、生ビールですか。", "kana": "はい、なまビールですか。", "romaji": "Hai, nama biiru desu ka.",
+        "en": "Yes, draft beer?", "gist": "confirming the drink type",
+        "key_ja": "生ビール", "key_romaji": "nama biiru", "key_en": "draft beer",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"生ビール","kana":"なまビール","romaji":"nama biiru","en":"draft beer"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Yes, draft beer?", "Draft beer, is that right?"]
+      },
+      {
+        "speaker": "b", "ja": "はい、それでお願いします。", "kana": "はい、それでおねがいします。", "romaji": "Hai, sore de onegaishimasu.",
+        "en": "Yes, that one please.", "gist": "confirming the order",
+        "key_ja": "それで", "key_romaji": "sore de", "key_en": "with that / that one",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"それで","kana":"それで","romaji":"sore de","en":"that one"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["Yes, that one please.", "Yes, that's fine."]
+      },
+      {
+        "speaker": "a", "ja": "お通しはこちらです。", "kana": "おとおしはこちらです。", "romaji": "Otoushi wa kochira desu.",
+        "en": "Here's your appetizer.", "gist": "serving the starter",
+        "key_ja": "お通し", "key_romaji": "otoushi", "key_en": "starter dish",
+        "tokens": [
+          {"ja":"お通し","kana":"おとおし","romaji":"otoushi","en":"appetizer"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"こちら","kana":"こちら","romaji":"kochira","en":"here"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Here's your appetizer.", "The starter is here."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "izakaya",
+    "variant_id": "ad27cdb4-2ff6-45af-8d7d-9f5c5ae4bcb5",
+    "level": "kodomo",
+    "setting": "A customer asks what today's special dish is.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome (to a customer)",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "今日のおすすめは何ですか。", "kana": "きょうのおすすめはなんですか。", "romaji": "Kyou no osusume wa nan desu ka.",
+        "en": "What's today's recommendation?", "gist": "asking about the special",
+        "key_ja": "おすすめ", "key_romaji": "osusume", "key_en": "recommendation",
+        "tokens": [
+          {"ja":"今日の","kana":"きょうの","romaji":"kyou no","en":"today's"},
+          {"ja":"おすすめ","kana":"おすすめ","romaji":"osusume","en":"recommendation"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"何","kana":"なん","romaji":"nan","en":"what"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["What's today's recommendation?", "What's the special today?"]
+      },
+      {
+        "speaker": "a", "ja": "今日は魚がおすすめです。", "kana": "きょうはさかながおすすめです。", "romaji": "Kyou wa sakana ga osusume desu.",
+        "en": "Today, fish is the recommendation.", "gist": "naming the special",
+        "key_ja": "魚", "key_romaji": "sakana", "key_en": "fish",
+        "tokens": [
+          {"ja":"今日","kana":"きょう","romaji":"kyou","en":"today"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"魚","kana":"さかな","romaji":"sakana","en":"fish"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"おすすめ","kana":"おすすめ","romaji":"osusume","en":"recommended"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Today, fish is the recommendation.", "Fish is today's special."]
+      },
+      {
+        "speaker": "b", "ja": "それはいくらですか。", "kana": "それはいくらですか。", "romaji": "Sore wa ikura desu ka.",
+        "en": "How much is that?", "gist": "asking the price",
+        "key_ja": "いくら", "key_romaji": "ikura", "key_en": "how much",
+        "tokens": [
+          {"ja":"それ","kana":"それ","romaji":"sore","en":"that"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"いくら","kana":"いくら","romaji":"ikura","en":"how much"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["How much is that?", "What's the price for that?"]
+      },
+      {
+        "speaker": "a", "ja": "八百円です。", "kana": "はっぴゃくえんです。", "romaji": "Happyaku en desu.",
+        "en": "It's eight hundred yen.", "gist": "giving the price",
+        "key_ja": "八百円", "key_romaji": "happyaku en", "key_en": "eight hundred yen",
+        "tokens": [
+          {"ja":"八百円","kana":"はっぴゃくえん","romaji":"happyaku en","en":"eight hundred yen"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["It's eight hundred yen.", "That's 800 yen."]
+      },
+      {
+        "speaker": "b", "ja": "じゃあ、それをください。", "kana": "じゃあ、それをください。", "romaji": "Jaa, sore o kudasai.",
+        "en": "Then, that one please.", "gist": "making the order",
+        "key_ja": "それ", "key_romaji": "sore", "key_en": "that one",
+        "tokens": [
+          {"ja":"じゃあ、","kana":"じゃあ、","romaji":"Jaa,","en":"Then,"},
+          {"ja":"それ","kana":"それ","romaji":"sore","en":"that"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"ください。","kana":"ください。","romaji":"kudasai.","en":"please"}
+        ],
+        "acceptable_en": ["Then, that one please.", "I'll have that then."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "izakaya",
+    "variant_id": "bff0de4c-8115-4946-8072-cb1b6bff54b4",
+    "level": "kodomo",
+    "setting": "A customer asks whether a dish contains fish.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the customer",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome (to a customer)",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "この料理に魚がありますか。", "kana": "このりょうりにさかながありますか。", "romaji": "Kono ryouri ni sakana ga arimasu ka.",
+        "en": "Is there fish in this dish?", "gist": "asking about an ingredient",
+        "key_ja": "魚", "key_romaji": "sakana", "key_en": "fish",
+        "tokens": [
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"料理","kana":"りょうり","romaji":"ryouri","en":"dish"},
+          {"ja":"に","kana":"に","romaji":"ni","en":"in"},
+          {"ja":"魚","kana":"さかな","romaji":"sakana","en":"fish"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"あります","kana":"あります","romaji":"arimasu","en":"is there"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is there fish in this dish?", "Does this have fish in it?"]
+      },
+      {
+        "speaker": "a", "ja": "いいえ、これは野菜だけです。", "kana": "いいえ、これはやさいだけです。", "romaji": "Iie, kore wa yasai dake desu.",
+        "en": "No, this is vegetables only.", "gist": "clarifying the ingredients",
+        "key_ja": "野菜", "key_romaji": "yasai", "key_en": "vegetables",
+        "tokens": [
+          {"ja":"いいえ、","kana":"いいえ、","romaji":"Iie,","en":"No,"},
+          {"ja":"これ","kana":"これ","romaji":"kore","en":"this"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"野菜","kana":"やさい","romaji":"yasai","en":"vegetables"},
+          {"ja":"だけ","kana":"だけ","romaji":"dake","en":"only"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["No, this is vegetables only.", "No, it's just vegetables."]
+      },
+      {
+        "speaker": "b", "ja": "安心ですね。", "kana": "あんしんですね。", "romaji": "Anshin desu ne.",
+        "en": "That's a relief, isn't it.", "gist": "expressing relief",
+        "key_ja": "安心", "key_romaji": "anshin", "key_en": "relief",
+        "tokens": [
+          {"ja":"安心","kana":"あんしん","romaji":"anshin","en":"relief"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"ね。","kana":"ね。","romaji":"ne.","en":"isn't it"}
+        ],
+        "acceptable_en": ["That's a relief, isn't it.", "Good, that's reassuring."]
+      },
+      {
+        "speaker": "a", "ja": "どうぞ、ごゆっくり。", "kana": "どうぞ、ごゆっくり。", "romaji": "Douzo, goyukkuri.",
+        "en": "Please, enjoy your meal.", "gist": "inviting them to enjoy",
+        "key_ja": "ごゆっくり", "key_romaji": "goyukkuri", "key_en": "at your leisure",
+        "tokens": [
+          {"ja":"どうぞ、","kana":"どうぞ、","romaji":"Douzo,","en":"Please,"},
+          {"ja":"ごゆっくり。","kana":"ごゆっくり。","romaji":"goyukkuri.","en":"take your time"}
+        ],
+        "acceptable_en": ["Please, enjoy your meal.", "Please, take your time."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "izakaya",
+    "variant_id": "c0bae612-993f-4a84-b311-94b170008d77",
+    "level": "kodomo",
+    "setting": "A customer asks for the bill and how to pay.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "お済みですか。", "kana": "おすみですか。", "romaji": "Osumi desu ka.",
+        "en": "Are you finished?", "gist": "checking if they're done",
+        "key_ja": "お済み", "key_romaji": "osumi", "key_en": "finished",
+        "tokens": [
+          {"ja":"お済み","kana":"おすみ","romaji":"osumi","en":"finished"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Are you finished?", "All done here?"]
+      },
+      {
+        "speaker": "b", "ja": "はい、お会計をお願いします。", "kana": "はい、おかいけいをおねがいします。", "romaji": "Hai, okaikei o onegaishimasu.",
+        "en": "Yes, the bill please.", "gist": "asking for the check",
+        "key_ja": "お会計", "key_romaji": "okaikei", "key_en": "the bill",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"お会計","kana":"おかいけい","romaji":"okaikei","en":"the bill"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["Yes, the bill please.", "Yes, can I get the check?"]
+      },
+      {
+        "speaker": "a", "ja": "全部で三千円です。", "kana": "ぜんぶでさんぜんえんです。", "romaji": "Zenbu de sanzen en desu.",
+        "en": "It's three thousand yen in total.", "gist": "giving the total",
+        "key_ja": "全部で", "key_romaji": "zenbu de", "key_en": "in total",
+        "tokens": [
+          {"ja":"全部で","kana":"ぜんぶで","romaji":"zenbu de","en":"in total"},
+          {"ja":"三千円","kana":"さんぜんえん","romaji":"sanzen en","en":"three thousand yen"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["It's three thousand yen in total.", "That comes to 3000 yen."]
+      },
+      {
+        "speaker": "b", "ja": "カードは使えますか。", "kana": "カードはつかえますか。", "romaji": "Kaado wa tsukaemasu ka.",
+        "en": "Can I use a card?", "gist": "asking about payment method",
+        "key_ja": "使えます", "key_romaji": "tsukaemasu", "key_en": "can use",
+        "tokens": [
+          {"ja":"カード","kana":"カード","romaji":"kaado","en":"card"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"使えます","kana":"つかえます","romaji":"tsukaemasu","en":"can use"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Can I use a card?", "Do you accept cards?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、大丈夫です。", "kana": "はい、だいじょうぶです。", "romaji": "Hai, daijoubu desu.",
+        "en": "Yes, that's fine.", "gist": "confirming card is fine",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, that's fine.", "Yes, cards are fine."]
+      },
+      {
+        "speaker": "b", "ja": "じゃあ、カードでお願いします。", "kana": "じゃあ、カードでおねがいします。", "romaji": "Jaa, kaado de onegaishimasu.",
+        "en": "Then, by card please.", "gist": "choosing the payment method",
+        "key_ja": "カードで", "key_romaji": "kaado de", "key_en": "by card",
+        "tokens": [
+          {"ja":"じゃあ、","kana":"じゃあ、","romaji":"Jaa,","en":"Then,"},
+          {"ja":"カードで","kana":"カードで","romaji":"kaado de","en":"by card"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["Then, by card please.", "I'll pay by card then."]
+      }
+    ]
+  }
+]

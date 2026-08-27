@@ -1,0 +1,363 @@
+[
+  {
+    "scenario_slug": "takushi",
+    "variant_id": "1dae1894-f310-4dfd-8d30-6196db80dc20",
+    "level": "kodomo",
+    "setting": "A passenger gives a destination and asks the fare.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "どちらまでですか。", "kana": "どちらまでですか。", "romaji": "Dochira made desu ka.",
+        "en": "Where to?", "gist": "asking the destination",
+        "key_ja": "どちら", "key_romaji": "dochira", "key_en": "where",
+        "tokens": [
+          {"ja":"どちらまで","kana":"どちらまで","romaji":"dochira made","en":"where to"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where to?", "Where are you headed?"]
+      },
+      {
+        "speaker": "b", "ja": "東京駅までお願いします。", "kana": "とうきょうえきまでおねがいします。", "romaji": "Toukyou eki made onegaishimasu.",
+        "en": "To Tokyo station, please.", "gist": "giving the destination",
+        "key_ja": "東京駅", "key_romaji": "Toukyou eki", "key_en": "Tokyo station",
+        "tokens": [
+          {"ja":"東京駅まで","kana":"とうきょうえきまで","romaji":"Toukyou eki made","en":"to Tokyo station"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["To Tokyo station, please.", "Tokyo station, please."]
+      },
+      {
+        "speaker": "a", "ja": "はい、わかります。", "kana": "はい、わかります。", "romaji": "Hai, wakarimasu.",
+        "en": "Yes, understood.", "gist": "confirming the destination",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"わかります。","kana":"わかります。","romaji":"wakarimasu.","en":"understood"}
+        ],
+        "acceptable_en": ["Yes, understood.", "Sure thing."]
+      },
+      {
+        "speaker": "b", "ja": "料金はいくらですか。", "kana": "りょうきんはいくらですか。", "romaji": "Ryoukin wa ikura desu ka.",
+        "en": "How much is the fare?", "gist": "asking the price",
+        "key_ja": "料金", "key_romaji": "ryoukin", "key_en": "fare",
+        "tokens": [
+          {"ja":"料金","kana":"りょうきん","romaji":"ryoukin","en":"fare"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"いくら","kana":"いくら","romaji":"ikura","en":"how much"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["How much is the fare?", "What will it cost?"]
+      },
+      {
+        "speaker": "a", "ja": "約二千円です。", "kana": "やくにせんえんです。", "romaji": "Yaku nisen en desu.",
+        "en": "About two thousand yen.", "gist": "giving an estimate",
+        "key_ja": "約", "key_romaji": "yaku", "key_en": "about/approximately",
+        "tokens": [
+          {"ja":"約","kana":"やく","romaji":"yaku","en":"about"},
+          {"ja":"二千円","kana":"にせんえん","romaji":"nisen en","en":"two thousand yen"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["About two thousand yen.", "Roughly 2000 yen."]
+      },
+      {
+        "speaker": "b", "ja": "わかります。", "kana": "わかります。", "romaji": "Wakarimasu.",
+        "en": "I understand.", "gist": "acknowledging the fare",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [{"ja":"わかります。","kana":"わかります。","romaji":"Wakarimasu.","en":"I understand."}],
+        "acceptable_en": ["I understand.", "Got it."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "takushi",
+    "variant_id": "22c925f9-a61e-4ce4-a546-3526c575966d",
+    "level": "kodomo",
+    "setting": "A passenger asks how long the trip to the airport will take.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "どちらまでですか。", "kana": "どちらまでですか。", "romaji": "Dochira made desu ka.",
+        "en": "Where to?", "gist": "asking the destination",
+        "key_ja": "どちら", "key_romaji": "dochira", "key_en": "where",
+        "tokens": [
+          {"ja":"どちらまで","kana":"どちらまで","romaji":"dochira made","en":"where to"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where to?", "Where are you headed?"]
+      },
+      {
+        "speaker": "b", "ja": "空港までお願いします。", "kana": "くうこうまでおねがいします。", "romaji": "Kuukou made onegaishimasu.",
+        "en": "To the airport, please.", "gist": "giving the destination",
+        "key_ja": "空港", "key_romaji": "kuukou", "key_en": "airport",
+        "tokens": [
+          {"ja":"空港まで","kana":"くうこうまで","romaji":"kuukou made","en":"to the airport"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["To the airport, please.", "The airport, please."]
+      },
+      {
+        "speaker": "a", "ja": "時間は三十分くらいです。", "kana": "じかんはさんじゅっぷんくらいです。", "romaji": "Jikan wa sanjuppun kurai desu.",
+        "en": "It'll take about thirty minutes.", "gist": "estimating the time",
+        "key_ja": "三十分", "key_romaji": "sanjuppun", "key_en": "thirty minutes",
+        "tokens": [
+          {"ja":"時間","kana":"じかん","romaji":"jikan","en":"time"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"三十分","kana":"さんじゅっぷん","romaji":"sanjuppun","en":"thirty minutes"},
+          {"ja":"くらい","kana":"くらい","romaji":"kurai","en":"about"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["It'll take about thirty minutes.", "About thirty minutes."]
+      },
+      {
+        "speaker": "b", "ja": "道は混みますか。", "kana": "みちはこみますか。", "romaji": "Michi wa komimasu ka.",
+        "en": "Is the road congested?", "gist": "asking about traffic",
+        "key_ja": "混みます", "key_romaji": "komimasu", "key_en": "get congested",
+        "tokens": [
+          {"ja":"道","kana":"みち","romaji":"michi","en":"road"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"混みます","kana":"こみます","romaji":"komimasu","en":"get congested"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is the road congested?", "Is traffic bad?"]
+      },
+      {
+        "speaker": "a", "ja": "いいえ、今は大丈夫です。", "kana": "いいえ、いまはだいじょうぶです。", "romaji": "Iie, ima wa daijoubu desu.",
+        "en": "No, it's fine right now.", "gist": "reassuring on traffic",
+        "key_ja": "今", "key_romaji": "ima", "key_en": "now",
+        "tokens": [
+          {"ja":"いいえ、","kana":"いいえ、","romaji":"Iie,","en":"No,"},
+          {"ja":"今","kana":"いま","romaji":"ima","en":"now"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["No, it's fine right now.", "No, traffic's fine at the moment."]
+      },
+      {
+        "speaker": "b", "ja": "安心です。", "kana": "あんしんです。", "romaji": "Anshin desu.",
+        "en": "That's a relief.", "gist": "expressing relief",
+        "key_ja": "安心", "key_romaji": "anshin", "key_en": "relief",
+        "tokens": [
+          {"ja":"安心","kana":"あんしん","romaji":"anshin","en":"relief"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["That's a relief.", "Good, that's reassuring."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "takushi",
+    "variant_id": "44d15d06-f9fc-4d39-ba6c-1d8ed8c56398",
+    "level": "kodomo",
+    "setting": "A passenger asks the driver about the neighborhood.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "どちらまでですか。", "kana": "どちらまでですか。", "romaji": "Dochira made desu ka.",
+        "en": "Where to?", "gist": "asking the destination",
+        "key_ja": "どちら", "key_romaji": "dochira", "key_en": "where",
+        "tokens": [
+          {"ja":"どちらまで","kana":"どちらまで","romaji":"dochira made","en":"where to"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where to?", "Where are you headed?"]
+      },
+      {
+        "speaker": "b", "ja": "浅草までお願いします。", "kana": "あさくさまでおねがいします。", "romaji": "Asakusa made onegaishimasu.",
+        "en": "To Asakusa, please.", "gist": "giving the destination",
+        "key_ja": "浅草", "key_romaji": "Asakusa", "key_en": "Asakusa",
+        "tokens": [
+          {"ja":"浅草まで","kana":"あさくさまで","romaji":"Asakusa made","en":"to Asakusa"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["To Asakusa, please.", "Asakusa, please."]
+      },
+      {
+        "speaker": "a", "ja": "このあたりは初めてですか。", "kana": "このあたりははじめてですか。", "romaji": "Kono atari wa hajimete desu ka.",
+        "en": "Is this your first time in this area?", "gist": "making conversation",
+        "key_ja": "初めて", "key_romaji": "hajimete", "key_en": "first time",
+        "tokens": [
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"あたり","kana":"あたり","romaji":"atari","en":"area"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"初めて","kana":"はじめて","romaji":"hajimete","en":"first time"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is this your first time in this area?", "First time around here?"]
+      },
+      {
+        "speaker": "b", "ja": "はい、初めてです。", "kana": "はい、はじめてです。", "romaji": "Hai, hajimete desu.",
+        "en": "Yes, first time.", "gist": "confirming it's new",
+        "key_ja": "初めて", "key_romaji": "hajimete", "key_en": "first time",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"初めて","kana":"はじめて","romaji":"hajimete","en":"first time"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, first time.", "Yes, never been here."]
+      },
+      {
+        "speaker": "a", "ja": "浅草は有名なお寺があります。", "kana": "あさくさはゆうめいなおてらがあります。", "romaji": "Asakusa wa yuumei na otera ga arimasu.",
+        "en": "Asakusa has a famous temple.", "gist": "sharing local info",
+        "key_ja": "お寺", "key_romaji": "otera", "key_en": "temple",
+        "tokens": [
+          {"ja":"浅草","kana":"あさくさ","romaji":"Asakusa","en":"Asakusa"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"有名な","kana":"ゆうめいな","romaji":"yuumei na","en":"famous"},
+          {"ja":"お寺","kana":"おてら","romaji":"otera","en":"temple"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"あります。","kana":"あります。","romaji":"arimasu.","en":"there is"}
+        ],
+        "acceptable_en": ["Asakusa has a famous temple.", "There's a famous temple in Asakusa."]
+      },
+      {
+        "speaker": "b", "ja": "楽しみです。", "kana": "たのしみです。", "romaji": "Tanoshimi desu.",
+        "en": "I'm looking forward to it.", "gist": "expressing anticipation",
+        "key_ja": "楽しみ", "key_romaji": "tanoshimi", "key_en": "looking forward",
+        "tokens": [
+          {"ja":"楽しみ","kana":"たのしみ","romaji":"tanoshimi","en":"looking forward"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["I'm looking forward to it.", "Can't wait."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "takushi",
+    "variant_id": "8281c65f-df84-4384-b14b-06090afe8768",
+    "level": "kodomo",
+    "setting": "A passenger asks whether cards are accepted.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "どちらまでですか。", "kana": "どちらまでですか。", "romaji": "Dochira made desu ka.",
+        "en": "Where to?", "gist": "asking the destination",
+        "key_ja": "どちら", "key_romaji": "dochira", "key_en": "where",
+        "tokens": [
+          {"ja":"どちらまで","kana":"どちらまで","romaji":"dochira made","en":"where to"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where to?", "Where are you headed?"]
+      },
+      {
+        "speaker": "b", "ja": "新宿までお願いします。", "kana": "しんじゅくまでおねがいします。", "romaji": "Shinjuku made onegaishimasu.",
+        "en": "To Shinjuku, please.", "gist": "giving the destination",
+        "key_ja": "新宿", "key_romaji": "Shinjuku", "key_en": "Shinjuku",
+        "tokens": [
+          {"ja":"新宿まで","kana":"しんじゅくまで","romaji":"Shinjuku made","en":"to Shinjuku"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["To Shinjuku, please.", "Shinjuku, please."]
+      },
+      {
+        "speaker": "a", "ja": "はい、わかります。", "kana": "はい、わかります。", "romaji": "Hai, wakarimasu.",
+        "en": "Yes, understood.", "gist": "confirming the destination",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"わかります。","kana":"わかります。","romaji":"wakarimasu.","en":"understood"}
+        ],
+        "acceptable_en": ["Yes, understood.", "Sure thing."]
+      },
+      {
+        "speaker": "b", "ja": "カードは使えますか。", "kana": "カードはつかえますか。", "romaji": "Kaado wa tsukaemasu ka.",
+        "en": "Can I use a card?", "gist": "asking about payment method",
+        "key_ja": "使えます", "key_romaji": "tsukaemasu", "key_en": "can use",
+        "tokens": [
+          {"ja":"カード","kana":"カード","romaji":"kaado","en":"card"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"使えます","kana":"つかえます","romaji":"tsukaemasu","en":"can use"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Can I use a card?", "Do you take cards?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、使えます。", "kana": "はい、つかえます。", "romaji": "Hai, tsukaemasu.",
+        "en": "Yes, you can.", "gist": "confirming cards are accepted",
+        "key_ja": "使えます", "key_romaji": "tsukaemasu", "key_en": "can use",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"使えます。","kana":"つかえます。","romaji":"tsukaemasu.","en":"you can use it"}
+        ],
+        "acceptable_en": ["Yes, you can.", "Yes, cards are fine."]
+      },
+      {
+        "speaker": "b", "ja": "安心です。", "kana": "あんしんです。", "romaji": "Anshin desu.",
+        "en": "That's a relief.", "gist": "expressing relief",
+        "key_ja": "安心", "key_romaji": "anshin", "key_en": "relief",
+        "tokens": [
+          {"ja":"安心","kana":"あんしん","romaji":"anshin","en":"relief"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["That's a relief.", "Good, that's reassuring."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "takushi",
+    "variant_id": "9cc02fd3-ec2d-4b25-b6da-fbec8bbfc21c",
+    "level": "kodomo",
+    "setting": "A passenger asks the driver to stop somewhere specific.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "どちらまでですか。", "kana": "どちらまでですか。", "romaji": "Dochira made desu ka.",
+        "en": "Where to?", "gist": "asking the destination",
+        "key_ja": "どちら", "key_romaji": "dochira", "key_en": "where",
+        "tokens": [
+          {"ja":"どちらまで","kana":"どちらまで","romaji":"dochira made","en":"where to"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where to?", "Where are you headed?"]
+      },
+      {
+        "speaker": "b", "ja": "あのコンビニの前でお願いします。", "kana": "あのコンビニのまえでおねがいします。", "romaji": "Ano konbini no mae de onegaishimasu.",
+        "en": "In front of that convenience store, please.", "gist": "specifying a stop",
+        "key_ja": "前で", "key_romaji": "mae de", "key_en": "in front of",
+        "tokens": [
+          {"ja":"あの","kana":"あの","romaji":"ano","en":"that"},
+          {"ja":"コンビニの前で","kana":"コンビニのまえで","romaji":"konbini no mae de","en":"in front of the convenience store"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["In front of that convenience store, please.", "Please stop by that convenience store."]
+      },
+      {
+        "speaker": "a", "ja": "はい、わかります。", "kana": "はい、わかります。", "romaji": "Hai, wakarimasu.",
+        "en": "Yes, understood.", "gist": "confirming the stop",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"わかります。","kana":"わかります。","romaji":"wakarimasu.","en":"understood"}
+        ],
+        "acceptable_en": ["Yes, understood.", "Sure thing."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the driver",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      },
+      {
+        "speaker": "a", "ja": "どういたしまして。", "kana": "どういたしまして。", "romaji": "Dou itashimashite.",
+        "en": "You're welcome.", "gist": "responding to thanks",
+        "key_ja": "どういたしまして", "key_romaji": "dou itashimashite", "key_en": "you're welcome",
+        "tokens": [{"ja":"どういたしまして。","kana":"どういたしまして。","romaji":"Dou itashimashite.","en":"You're welcome."}],
+        "acceptable_en": ["You're welcome.", "No problem."]
+      },
+      {
+        "speaker": "b", "ja": "ここでいいです。", "kana": "ここでいいです。", "romaji": "Koko de ii desu.",
+        "en": "Here is fine.", "gist": "confirming the stop point",
+        "key_ja": "ここで", "key_romaji": "koko de", "key_en": "here",
+        "tokens": [
+          {"ja":"ここで","kana":"ここで","romaji":"koko de","en":"here"},
+          {"ja":"いい","kana":"いい","romaji":"ii","en":"good"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Here is fine.", "This is good, right here."]
+      }
+    ]
+  }
+]

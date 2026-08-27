@@ -1,0 +1,328 @@
+[
+  {
+    "scenario_slug": "eki",
+    "variant_id": "62497461-fdb3-47a7-bb9c-cb9bd49af983",
+    "level": "kodomo",
+    "setting": "A traveler asks which platform their train leaves from.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "How can I help you?", "gist": "greeting the traveler",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome / how can I help",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"How can I help you?"}],
+        "acceptable_en": ["How can I help you?", "Welcome, how can I help?"]
+      },
+      {
+        "speaker": "b", "ja": "東京行きは何番線ですか。", "kana": "とうきょうゆきはなんばんせんですか。", "romaji": "Toukyou yuki wa nanbansen desu ka.",
+        "en": "Which platform for the Tokyo-bound train?", "gist": "asking about the platform",
+        "key_ja": "何番線", "key_romaji": "nanbansen", "key_en": "which platform",
+        "tokens": [
+          {"ja":"東京行き","kana":"とうきょうゆき","romaji":"Toukyou yuki","en":"Tokyo-bound"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"何番線","kana":"なんばんせん","romaji":"nanbansen","en":"which platform"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Which platform for the Tokyo-bound train?", "What platform goes to Tokyo?"]
+      },
+      {
+        "speaker": "a", "ja": "三番線です。", "kana": "さんばんせんです。", "romaji": "Sanbansen desu.",
+        "en": "Platform three.", "gist": "giving the platform number",
+        "key_ja": "三番線", "key_romaji": "sanbansen", "key_en": "platform three",
+        "tokens": [
+          {"ja":"三番線","kana":"さんばんせん","romaji":"sanbansen","en":"platform three"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Platform three.", "It's platform 3."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      },
+      {
+        "speaker": "a", "ja": "どういたしまして。", "kana": "どういたしまして。", "romaji": "Dou itashimashite.",
+        "en": "You're welcome.", "gist": "responding to thanks",
+        "key_ja": "どういたしまして", "key_romaji": "dou itashimashite", "key_en": "you're welcome",
+        "tokens": [{"ja":"どういたしまして。","kana":"どういたしまして。","romaji":"Dou itashimashite.","en":"You're welcome."}],
+        "acceptable_en": ["You're welcome.", "No problem."]
+      },
+      {
+        "speaker": "b", "ja": "わかります。", "kana": "わかります。", "romaji": "Wakarimasu.",
+        "en": "I understand.", "gist": "acknowledging the info",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [{"ja":"わかります。","kana":"わかります。","romaji":"Wakarimasu.","en":"I understand."}],
+        "acceptable_en": ["I understand.", "Got it."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "eki",
+    "variant_id": "875105fe-bf88-4948-ac14-8824438ea913",
+    "level": "kodomo",
+    "setting": "A traveler reports losing something on a train.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "How can I help you?", "gist": "greeting the traveler",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome / how can I help",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"How can I help you?"}],
+        "acceptable_en": ["How can I help you?", "Welcome, how can I help?"]
+      },
+      {
+        "speaker": "b", "ja": "傘の忘れ物があります。", "kana": "かさのわすれものがあります。", "romaji": "Kasa no wasuremono ga arimasu.",
+        "en": "There's a lost umbrella of mine.", "gist": "reporting a lost item",
+        "key_ja": "忘れ物", "key_romaji": "wasuremono", "key_en": "lost item",
+        "tokens": [
+          {"ja":"傘の","kana":"かさの","romaji":"kasa no","en":"umbrella"},
+          {"ja":"忘れ物","kana":"わすれもの","romaji":"wasuremono","en":"lost item"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"あります。","kana":"あります。","romaji":"arimasu.","en":"there is"}
+        ],
+        "acceptable_en": ["There's a lost umbrella of mine.", "I left my umbrella on the train."]
+      },
+      {
+        "speaker": "a", "ja": "どんな傘ですか。", "kana": "どんなかさですか。", "romaji": "Donna kasa desu ka.",
+        "en": "What kind of umbrella?", "gist": "asking for details",
+        "key_ja": "どんな", "key_romaji": "donna", "key_en": "what kind of",
+        "tokens": [
+          {"ja":"どんな","kana":"どんな","romaji":"donna","en":"what kind of"},
+          {"ja":"傘","kana":"かさ","romaji":"kasa","en":"umbrella"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is it"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["What kind of umbrella?", "What does it look like?"]
+      },
+      {
+        "speaker": "b", "ja": "黒い傘です。", "kana": "くろいかさです。", "romaji": "Kuroi kasa desu.",
+        "en": "A black umbrella.", "gist": "describing the item",
+        "key_ja": "黒い", "key_romaji": "kuroi", "key_en": "black",
+        "tokens": [
+          {"ja":"黒い","kana":"くろい","romaji":"kuroi","en":"black"},
+          {"ja":"傘","kana":"かさ","romaji":"kasa","en":"umbrella"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["A black umbrella.", "It's black."]
+      },
+      {
+        "speaker": "a", "ja": "わかります、確認します。", "kana": "わかります、かくにんします。", "romaji": "Wakarimasu, kakunin shimasu.",
+        "en": "I understand, I'll check.", "gist": "agreeing to check",
+        "key_ja": "確認します", "key_romaji": "kakunin shimasu", "key_en": "will check",
+        "tokens": [
+          {"ja":"わかります、","kana":"わかります、","romaji":"Wakarimasu,","en":"I understand,"},
+          {"ja":"確認します。","kana":"かくにんします。","romaji":"kakunin shimasu.","en":"I'll check"}
+        ],
+        "acceptable_en": ["I understand, I'll check.", "Okay, let me check."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "eki",
+    "variant_id": "a1a62004-4905-4efa-81fc-76aab2ec8ea3",
+    "level": "kodomo",
+    "setting": "A traveler asks whether their pass covers this line.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "How can I help you?", "gist": "greeting the traveler",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome / how can I help",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"How can I help you?"}],
+        "acceptable_en": ["How can I help you?", "Welcome, how can I help?"]
+      },
+      {
+        "speaker": "b", "ja": "このパスはこの路線で使えますか。", "kana": "このパスはこのろせんでつかえますか。", "romaji": "Kono pasu wa kono rosen de tsukaemasu ka.",
+        "en": "Can I use this pass on this line?", "gist": "asking whether the pass works",
+        "key_ja": "路線", "key_romaji": "rosen", "key_en": "train line",
+        "tokens": [
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"パス","kana":"パス","romaji":"pasu","en":"pass"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"この","kana":"この","romaji":"kono","en":"this"},
+          {"ja":"路線","kana":"ろせん","romaji":"rosen","en":"line"},
+          {"ja":"で","kana":"で","romaji":"de","en":"on"},
+          {"ja":"使えます","kana":"つかえます","romaji":"tsukaemasu","en":"can use"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Can I use this pass on this line?", "Does this pass work on this line?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、使えます。", "kana": "はい、つかえます。", "romaji": "Hai, tsukaemasu.",
+        "en": "Yes, you can use it.", "gist": "confirming the pass works",
+        "key_ja": "使えます", "key_romaji": "tsukaemasu", "key_en": "can use",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"使えます。","kana":"つかえます。","romaji":"tsukaemasu.","en":"you can use it"}
+        ],
+        "acceptable_en": ["Yes, you can use it.", "Yes, that pass works here."]
+      },
+      {
+        "speaker": "b", "ja": "安心です。", "kana": "あんしんです。", "romaji": "Anshin desu.",
+        "en": "That's a relief.", "gist": "expressing relief",
+        "key_ja": "安心", "key_romaji": "anshin", "key_en": "relief",
+        "tokens": [
+          {"ja":"安心","kana":"あんしん","romaji":"anshin","en":"relief"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["That's a relief.", "Good, that's reassuring."]
+      },
+      {
+        "speaker": "a", "ja": "どういたしまして。", "kana": "どういたしまして。", "romaji": "Dou itashimashite.",
+        "en": "You're welcome.", "gist": "responding to thanks",
+        "key_ja": "どういたしまして", "key_romaji": "dou itashimashite", "key_en": "you're welcome",
+        "tokens": [{"ja":"どういたしまして。","kana":"どういたしまして。","romaji":"Dou itashimashite.","en":"You're welcome."}],
+        "acceptable_en": ["You're welcome.", "No problem."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "eki",
+    "variant_id": "b10c416a-b1dd-425f-928e-ef94f3d2c1f7",
+    "level": "kodomo",
+    "setting": "A traveler buys a reserved seat to Tokyo.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "How can I help you?", "gist": "greeting the traveler",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome / how can I help",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"How can I help you?"}],
+        "acceptable_en": ["How can I help you?", "Welcome, how can I help?"]
+      },
+      {
+        "speaker": "b", "ja": "東京までの指定席をください。", "kana": "とうきょうまでのしていせきをください。", "romaji": "Toukyou made no shiteiseki o kudasai.",
+        "en": "A reserved seat to Tokyo, please.", "gist": "requesting a reserved seat",
+        "key_ja": "指定席", "key_romaji": "shiteiseki", "key_en": "reserved seat",
+        "tokens": [
+          {"ja":"東京までの","kana":"とうきょうまでの","romaji":"Toukyou made no","en":"to Tokyo"},
+          {"ja":"指定席","kana":"していせき","romaji":"shiteiseki","en":"reserved seat"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"ください。","kana":"ください。","romaji":"kudasai.","en":"please"}
+        ],
+        "acceptable_en": ["A reserved seat to Tokyo, please.", "One reserved seat to Tokyo."]
+      },
+      {
+        "speaker": "a", "ja": "はい、こちらです。", "kana": "はい、こちらです。", "romaji": "Hai, kochira desu.",
+        "en": "Yes, here you go.", "gist": "handing over the ticket",
+        "key_ja": "こちら", "key_romaji": "kochira", "key_en": "here",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"こちら","kana":"こちら","romaji":"kochira","en":"here"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, here you go.", "Yes, here's your ticket."]
+      },
+      {
+        "speaker": "b", "ja": "座席は何番ですか。", "kana": "ざせきはなんばんですか。", "romaji": "Zaseki wa nanban desu ka.",
+        "en": "What's the seat number?", "gist": "asking the seat number",
+        "key_ja": "座席", "key_romaji": "zaseki", "key_en": "seat",
+        "tokens": [
+          {"ja":"座席","kana":"ざせき","romaji":"zaseki","en":"seat"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"何番","kana":"なんばん","romaji":"nanban","en":"what number"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["What's the seat number?", "Which seat number is it?"]
+      },
+      {
+        "speaker": "a", "ja": "五番です。", "kana": "ごばんです。", "romaji": "Goban desu.",
+        "en": "Number five.", "gist": "giving the seat number",
+        "key_ja": "五番", "key_romaji": "goban", "key_en": "number five",
+        "tokens": [
+          {"ja":"五番","kana":"ごばん","romaji":"goban","en":"number five"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Number five.", "Seat number 5."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "eki",
+    "variant_id": "fc1ac649-f728-43c5-983c-e54dc8ec17b2",
+    "level": "kodomo",
+    "setting": "A traveler asks about the last train of the night.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "How can I help you?", "gist": "greeting the traveler",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome / how can I help",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"How can I help you?"}],
+        "acceptable_en": ["How can I help you?", "Welcome, how can I help?"]
+      },
+      {
+        "speaker": "b", "ja": "最終電車は何時ですか。", "kana": "さいしゅうでんしゃはなんじですか。", "romaji": "Saishuu densha wa nanji desu ka.",
+        "en": "What time is the last train?", "gist": "asking about the last train",
+        "key_ja": "最終電車", "key_romaji": "saishuu densha", "key_en": "last train",
+        "tokens": [
+          {"ja":"最終電車","kana":"さいしゅうでんしゃ","romaji":"saishuu densha","en":"last train"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"何時","kana":"なんじ","romaji":"nanji","en":"what time"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["What time is the last train?", "When's the last train?"]
+      },
+      {
+        "speaker": "a", "ja": "十一時半です。", "kana": "じゅういちじはんです。", "romaji": "Juuichiji han desu.",
+        "en": "Eleven thirty.", "gist": "giving the time",
+        "key_ja": "十一時半", "key_romaji": "juuichiji han", "key_en": "eleven thirty",
+        "tokens": [
+          {"ja":"十一時半","kana":"じゅういちじはん","romaji":"juuichiji han","en":"eleven thirty"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Eleven thirty.", "It leaves at 11:30."]
+      },
+      {
+        "speaker": "b", "ja": "まだ間に合いますか。", "kana": "まだまにあいますか。", "romaji": "Mada maniaimasu ka.",
+        "en": "Can I still make it?", "gist": "asking if there's time",
+        "key_ja": "間に合います", "key_romaji": "maniaimasu", "key_en": "make it in time",
+        "tokens": [
+          {"ja":"まだ","kana":"まだ","romaji":"mada","en":"still"},
+          {"ja":"間に合います","kana":"まにあいます","romaji":"maniaimasu","en":"make it in time"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Can I still make it?", "Is there still time?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、大丈夫です。", "kana": "はい、だいじょうぶです。", "romaji": "Hai, daijoubu desu.",
+        "en": "Yes, that's fine.", "gist": "reassuring the traveler",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, that's fine.", "Yes, you have time."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the staff",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  }
+]

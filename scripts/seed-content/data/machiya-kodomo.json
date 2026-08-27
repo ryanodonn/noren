@@ -1,0 +1,362 @@
+[
+  {
+    "scenario_slug": "machiya",
+    "variant_id": "082b73b3-c6e4-4b4a-845a-a59a6f46c8a6",
+    "level": "kodomo",
+    "setting": "A guest asks about the bath hours and towels.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the guest",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "お風呂はいつ入れますか。", "kana": "おふろはいつはいれますか。", "romaji": "Ofuro wa itsu hairemasu ka.",
+        "en": "When can I use the bath?", "gist": "asking about bath hours",
+        "key_ja": "入れます", "key_romaji": "hairemasu", "key_en": "can enter/use",
+        "tokens": [
+          {"ja":"お風呂","kana":"おふろ","romaji":"ofuro","en":"bath"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"いつ","kana":"いつ","romaji":"itsu","en":"when"},
+          {"ja":"入れます","kana":"はいれます","romaji":"hairemasu","en":"can enter"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["When can I use the bath?", "What time is the bath open?"]
+      },
+      {
+        "speaker": "a", "ja": "七時から十時までです。", "kana": "しちじからじゅうじまでです。", "romaji": "Shichiji kara juuji made desu.",
+        "en": "From seven to ten.", "gist": "giving the bath hours",
+        "key_ja": "から〜まで", "key_romaji": "kara...made", "key_en": "from...to",
+        "tokens": [
+          {"ja":"七時","kana":"しちじ","romaji":"shichiji","en":"seven o'clock"},
+          {"ja":"から","kana":"から","romaji":"kara","en":"from"},
+          {"ja":"十時","kana":"じゅうじ","romaji":"juuji","en":"ten o'clock"},
+          {"ja":"まで","kana":"まで","romaji":"made","en":"until"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["From seven to ten.", "It's open from 7 to 10."]
+      },
+      {
+        "speaker": "b", "ja": "タオルはありますか。", "kana": "タオルはありますか。", "romaji": "Taoru wa arimasu ka.",
+        "en": "Are there towels?", "gist": "asking about towels",
+        "key_ja": "タオル", "key_romaji": "taoru", "key_en": "towel",
+        "tokens": [
+          {"ja":"タオル","kana":"タオル","romaji":"taoru","en":"towel"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"あります","kana":"あります","romaji":"arimasu","en":"are there"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Are there towels?", "Do you have towels?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、部屋にあります。", "kana": "はい、へやにあります。", "romaji": "Hai, heya ni arimasu.",
+        "en": "Yes, they're in the room.", "gist": "saying where they are",
+        "key_ja": "部屋", "key_romaji": "heya", "key_en": "room",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"部屋","kana":"へや","romaji":"heya","en":"room"},
+          {"ja":"に","kana":"に","romaji":"ni","en":"in"},
+          {"ja":"あります。","kana":"あります。","romaji":"arimasu.","en":"there are"}
+        ],
+        "acceptable_en": ["Yes, they're in the room.", "Yes, you'll find them in your room."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the host",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "machiya",
+    "variant_id": "17cc4804-2e2e-4239-b1b2-9ff695bc9b6e",
+    "level": "kodomo",
+    "setting": "A guest asks about checkout time and luggage storage.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "おはようございます。", "kana": "おはようございます。", "romaji": "Ohayou gozaimasu.",
+        "en": "Good morning.", "gist": "greeting the guest",
+        "key_ja": "おはようございます", "key_romaji": "ohayou gozaimasu", "key_en": "good morning",
+        "tokens": [{"ja":"おはようございます。","kana":"おはようございます。","romaji":"Ohayou gozaimasu.","en":"Good morning."}],
+        "acceptable_en": ["Good morning."]
+      },
+      {
+        "speaker": "b", "ja": "チェックアウトは何時ですか。", "kana": "チェックアウトはなんじですか。", "romaji": "Chekkuauto wa nanji desu ka.",
+        "en": "What time is checkout?", "gist": "asking about checkout time",
+        "key_ja": "チェックアウト", "key_romaji": "chekkuauto", "key_en": "checkout",
+        "tokens": [
+          {"ja":"チェックアウト","kana":"チェックアウト","romaji":"chekkuauto","en":"checkout"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"何時","kana":"なんじ","romaji":"nanji","en":"what time"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["What time is checkout?", "When's checkout?"]
+      },
+      {
+        "speaker": "a", "ja": "十時です。", "kana": "じゅうじです。", "romaji": "Juuji desu.",
+        "en": "It's ten o'clock.", "gist": "giving the checkout time",
+        "key_ja": "十時", "key_romaji": "juuji", "key_en": "ten o'clock",
+        "tokens": [
+          {"ja":"十時","kana":"じゅうじ","romaji":"juuji","en":"ten o'clock"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["It's ten o'clock.", "Ten AM."]
+      },
+      {
+        "speaker": "b", "ja": "荷物を預けられますか。", "kana": "にもつをあずけられますか。", "romaji": "Nimotsu o azukeraremasu ka.",
+        "en": "Can I leave my luggage?", "gist": "asking about luggage storage",
+        "key_ja": "預けられます", "key_romaji": "azukeraremasu", "key_en": "can leave (with someone)",
+        "tokens": [
+          {"ja":"荷物","kana":"にもつ","romaji":"nimotsu","en":"luggage"},
+          {"ja":"を","kana":"を","romaji":"o","en":""},
+          {"ja":"預けられます","kana":"あずけられます","romaji":"azukeraremasu","en":"can leave"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Can I leave my luggage?", "Can you hold my bags?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、大丈夫です。", "kana": "はい、だいじょうぶです。", "romaji": "Hai, daijoubu desu.",
+        "en": "Yes, that's fine.", "gist": "confirming it's fine",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, that's fine.", "Yes, no problem."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the host",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "machiya",
+    "variant_id": "5d9a51c6-8fbe-439f-aaa3-4799dc50744d",
+    "level": "kodomo",
+    "setting": "A guest arrives and is shown the entrance rules.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ、どうぞ。", "kana": "いらっしゃいませ、どうぞ。", "romaji": "Irasshaimase, douzo.",
+        "en": "Welcome, please come in.", "gist": "welcoming the guest in",
+        "key_ja": "どうぞ", "key_romaji": "douzo", "key_en": "please (go ahead)",
+        "tokens": [
+          {"ja":"いらっしゃいませ、","kana":"いらっしゃいませ、","romaji":"Irasshaimase,","en":"Welcome,"},
+          {"ja":"どうぞ。","kana":"どうぞ。","romaji":"douzo.","en":"please come in."}
+        ],
+        "acceptable_en": ["Welcome, please come in.", "Welcome, right this way."]
+      },
+      {
+        "speaker": "b", "ja": "お邪魔します。", "kana": "おじゃまします。", "romaji": "Ojama shimasu.",
+        "en": "Thank you for having me.", "gist": "a set phrase on entering",
+        "key_ja": "お邪魔します", "key_romaji": "ojama shimasu", "key_en": "excuse the intrusion (entering phrase)",
+        "tokens": [{"ja":"お邪魔します。","kana":"おじゃまします。","romaji":"Ojama shimasu.","en":"Thank you for having me."}],
+        "acceptable_en": ["Thank you for having me.", "Excuse me for coming in."]
+      },
+      {
+        "speaker": "a", "ja": "靴はここでお願いします。", "kana": "くつはここでおねがいします。", "romaji": "Kutsu wa koko de onegaishimasu.",
+        "en": "Shoes here, please.", "gist": "explaining where to remove shoes",
+        "key_ja": "靴", "key_romaji": "kutsu", "key_en": "shoes",
+        "tokens": [
+          {"ja":"靴","kana":"くつ","romaji":"kutsu","en":"shoes"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"ここで","kana":"ここで","romaji":"koko de","en":"here"},
+          {"ja":"お願いします。","kana":"おねがいします。","romaji":"onegaishimasu.","en":"please"}
+        ],
+        "acceptable_en": ["Shoes here, please.", "Please leave your shoes here."]
+      },
+      {
+        "speaker": "b", "ja": "はい、わかります。", "kana": "はい、わかります。", "romaji": "Hai, wakarimasu.",
+        "en": "Yes, I understand.", "gist": "acknowledging the rule",
+        "key_ja": "わかります", "key_romaji": "wakarimasu", "key_en": "understand",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"わかります。","kana":"わかります。","romaji":"wakarimasu.","en":"I understand"}
+        ],
+        "acceptable_en": ["Yes, I understand.", "Yes, got it."]
+      },
+      {
+        "speaker": "a", "ja": "どうぞ、こちらです。", "kana": "どうぞ、こちらです。", "romaji": "Douzo, kochira desu.",
+        "en": "Please, this way.", "gist": "showing the way",
+        "key_ja": "こちら", "key_romaji": "kochira", "key_en": "this way",
+        "tokens": [
+          {"ja":"どうぞ、","kana":"どうぞ、","romaji":"Douzo,","en":"Please,"},
+          {"ja":"こちら","kana":"こちら","romaji":"kochira","en":"this way"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Please, this way.", "This way, please."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the host",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "machiya",
+    "variant_id": "7ad67d93-afa9-4694-9f7c-34b050d5df14",
+    "level": "kodomo",
+    "setting": "A guest asks for a restaurant recommendation nearby.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the guest",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "近くにいいレストランがありますか。", "kana": "ちかくにいいレストランがありますか。", "romaji": "Chikaku ni ii resutoran ga arimasu ka.",
+        "en": "Is there a good restaurant nearby?", "gist": "asking for a recommendation",
+        "key_ja": "近く", "key_romaji": "chikaku", "key_en": "nearby",
+        "tokens": [
+          {"ja":"近く","kana":"ちかく","romaji":"chikaku","en":"nearby"},
+          {"ja":"に","kana":"に","romaji":"ni","en":"in"},
+          {"ja":"いい","kana":"いい","romaji":"ii","en":"good"},
+          {"ja":"レストラン","kana":"レストラン","romaji":"resutoran","en":"restaurant"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"あります","kana":"あります","romaji":"arimasu","en":"is there"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is there a good restaurant nearby?", "Any good restaurants around here?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、駅の前に美味しい店があります。", "kana": "はい、えきのまえにおいしいみせがあります。", "romaji": "Hai, eki no mae ni oishii mise ga arimasu.",
+        "en": "Yes, there's a delicious shop in front of the station.", "gist": "pointing out a spot",
+        "key_ja": "美味しい", "key_romaji": "oishii", "key_en": "delicious",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"駅の前","kana":"えきのまえ","romaji":"eki no mae","en":"in front of the station"},
+          {"ja":"に","kana":"に","romaji":"ni","en":"at"},
+          {"ja":"美味しい","kana":"おいしい","romaji":"oishii","en":"delicious"},
+          {"ja":"店","kana":"みせ","romaji":"mise","en":"shop"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"あります。","kana":"あります。","romaji":"arimasu.","en":"there is"}
+        ],
+        "acceptable_en": ["Yes, there's a delicious shop in front of the station.", "Yes, there's a good place by the station."]
+      },
+      {
+        "speaker": "b", "ja": "そこは何が有名ですか。", "kana": "そこはなにがゆうめいですか。", "romaji": "Soko wa nani ga yuumei desu ka.",
+        "en": "What's that place famous for?", "gist": "asking what's known there",
+        "key_ja": "有名", "key_romaji": "yuumei", "key_en": "famous",
+        "tokens": [
+          {"ja":"そこ","kana":"そこ","romaji":"soko","en":"that place"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"何","kana":"なに","romaji":"nani","en":"what"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"有名","kana":"ゆうめい","romaji":"yuumei","en":"famous"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["What's that place famous for?", "What are they known for?"]
+      },
+      {
+        "speaker": "a", "ja": "ラーメンが有名です。", "kana": "ラーメンがゆうめいです。", "romaji": "Raamen ga yuumei desu.",
+        "en": "Ramen is famous there.", "gist": "naming the specialty",
+        "key_ja": "ラーメン", "key_romaji": "raamen", "key_en": "ramen",
+        "tokens": [
+          {"ja":"ラーメン","kana":"ラーメン","romaji":"raamen","en":"ramen"},
+          {"ja":"が","kana":"が","romaji":"ga","en":""},
+          {"ja":"有名","kana":"ゆうめい","romaji":"yuumei","en":"famous"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Ramen is famous there.", "They're known for ramen."]
+      },
+      {
+        "speaker": "b", "ja": "いいですね、楽しみです。", "kana": "いいですね、たのしみです。", "romaji": "Ii desu ne, tanoshimi desu.",
+        "en": "Sounds good, I'm looking forward to it.", "gist": "expressing anticipation",
+        "key_ja": "楽しみ", "key_romaji": "tanoshimi", "key_en": "looking forward to",
+        "tokens": [
+          {"ja":"いい","kana":"いい","romaji":"ii","en":"good"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"ね、","kana":"ね、","romaji":"ne,","en":"isn't it,"},
+          {"ja":"楽しみ","kana":"たのしみ","romaji":"tanoshimi","en":"looking forward"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Sounds good, I'm looking forward to it.", "Great, I can't wait."]
+      }
+    ]
+  },
+  {
+    "scenario_slug": "machiya",
+    "variant_id": "9df7f255-0819-4ecb-bde4-bd5cffe06b32",
+    "level": "kodomo",
+    "setting": "A guest asks how the heating works.",
+    "lines": [
+      {
+        "speaker": "a", "ja": "いらっしゃいませ。", "kana": "いらっしゃいませ。", "romaji": "Irasshaimase.",
+        "en": "Welcome.", "gist": "greeting the guest",
+        "key_ja": "いらっしゃいませ", "key_romaji": "irasshaimase", "key_en": "welcome",
+        "tokens": [{"ja":"いらっしゃいませ。","kana":"いらっしゃいませ。","romaji":"Irasshaimase.","en":"Welcome."}],
+        "acceptable_en": ["Welcome.", "Welcome in."]
+      },
+      {
+        "speaker": "b", "ja": "暖房はどこですか。", "kana": "だんぼうはどこですか。", "romaji": "Danbou wa doko desu ka.",
+        "en": "Where's the heater?", "gist": "asking where the heater is",
+        "key_ja": "暖房", "key_romaji": "danbou", "key_en": "heater",
+        "tokens": [
+          {"ja":"暖房","kana":"だんぼう","romaji":"danbou","en":"heater"},
+          {"ja":"は","kana":"は","romaji":"wa","en":""},
+          {"ja":"どこ","kana":"どこ","romaji":"doko","en":"where"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Where's the heater?", "Where is the heating?"]
+      },
+      {
+        "speaker": "a", "ja": "あのスイッチです。", "kana": "あのスイッチです。", "romaji": "Ano suicchi desu.",
+        "en": "That's the switch.", "gist": "pointing out the switch",
+        "key_ja": "スイッチ", "key_romaji": "suicchi", "key_en": "switch",
+        "tokens": [
+          {"ja":"あの","kana":"あの","romaji":"ano","en":"that"},
+          {"ja":"スイッチ","kana":"スイッチ","romaji":"suicchi","en":"switch"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["That's the switch.", "That switch over there."]
+      },
+      {
+        "speaker": "b", "ja": "これでいいですか。", "kana": "これでいいですか。", "romaji": "Kore de ii desu ka.",
+        "en": "Is this okay?", "gist": "checking they're doing it right",
+        "key_ja": "これで", "key_romaji": "kore de", "key_en": "with this",
+        "tokens": [
+          {"ja":"これで","kana":"これで","romaji":"kore de","en":"with this"},
+          {"ja":"いい","kana":"いい","romaji":"ii","en":"good"},
+          {"ja":"です","kana":"です","romaji":"desu","en":"is"},
+          {"ja":"か。","kana":"か。","romaji":"ka.","en":"?"}
+        ],
+        "acceptable_en": ["Is this okay?", "Is this right?"]
+      },
+      {
+        "speaker": "a", "ja": "はい、それで大丈夫です。", "kana": "はい、それでだいじょうぶです。", "romaji": "Hai, sore de daijoubu desu.",
+        "en": "Yes, that's fine.", "gist": "confirming it's correct",
+        "key_ja": "大丈夫", "key_romaji": "daijoubu", "key_en": "fine/okay",
+        "tokens": [
+          {"ja":"はい、","kana":"はい、","romaji":"Hai,","en":"Yes,"},
+          {"ja":"それで","kana":"それで","romaji":"sore de","en":"with that"},
+          {"ja":"大丈夫","kana":"だいじょうぶ","romaji":"daijoubu","en":"fine"},
+          {"ja":"です。","kana":"です。","romaji":"desu.","en":"is"}
+        ],
+        "acceptable_en": ["Yes, that's fine.", "Yes, that's correct."]
+      },
+      {
+        "speaker": "b", "ja": "ありがとうございます。", "kana": "ありがとうございます。", "romaji": "Arigatou gozaimasu.",
+        "en": "Thank you.", "gist": "thanking the host",
+        "key_ja": "ありがとうございます", "key_romaji": "arigatou gozaimasu", "key_en": "thank you",
+        "tokens": [{"ja":"ありがとうございます。","kana":"ありがとうございます。","romaji":"Arigatou gozaimasu.","en":"Thank you."}],
+        "acceptable_en": ["Thank you.", "Thanks."]
+      }
+    ]
+  }
+]
