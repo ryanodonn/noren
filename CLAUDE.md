@@ -17,7 +17,7 @@ Read before making product or architecture decisions:
 
 - Next.js (TypeScript), Tailwind. Visual identity is a deliberate dark-only "field notebook" look — Barlow Condensed + Zen Kaku Gothic New, amber accent, hairline grid dividers, sharp corners (see `globals.css`'s `--noren-*` tokens). Don't introduce a light theme or swap in default Tailwind grays.
 - Supabase: Postgres + Auth. Project `noren` (ref `ykapxecddtrnzdcefwvd`, region `us-east-1`).
-- Gemini (`@google/genai`, model `gemini-2.5-flash`, Google AI Studio free-tier key) for live dialogue generation and grading — see Conventions below, this was a deliberate reintroduction after starting the project LLM-free.
+- Gemini (`@google/genai`, model `gemini-3.6-flash`, Google AI Studio free-tier key) for live dialogue generation and grading — see Conventions below, this was a deliberate reintroduction after starting the project LLM-free.
 - Env vars: see `.env.example`. Real values live in `.env.local` (gitignored) — never commit them.
 
 ## Conventions
