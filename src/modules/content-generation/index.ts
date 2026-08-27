@@ -1,5 +1,6 @@
 import "server-only";
 import type { DbClient } from "@/lib/supabase/types";
+import type { Json } from "@/lib/supabase/database.types";
 import type { LevelId, Verdict } from "@/lib/types";
 import { gemini, GEMINI_MODEL } from "@/lib/gemini";
 import { parseModelJson } from "@/lib/parse-model-json";
@@ -9,7 +10,13 @@ import { gradeAnswer } from "./grading";
 
 type ScenarioForContent = { id: string; name_en: string; speaker_a: string; speaker_b: string };
 type VariantForContent = { id: string; description: string | null };
-type LevelForContent = { id: LevelId; label_en: string; label_ja: string; spec: string | null };
+type LevelForContent = {
+  id: LevelId;
+  label_en: string;
+  label_ja: string;
+  spec: string | null;
+  example_dialogue: Json;
+};
 
 async function callGemini(prompt: string): Promise<string> {
   const response = await gemini.models.generateContent({
@@ -44,7 +51,14 @@ async function generateAndStore(
   const raw = await callGemini(
     dialoguePrompt(
       { nameEn: scenario.name_en, speakerA: scenario.speaker_a, speakerB: scenario.speaker_b },
-      { labelEn: level.label_en, labelJa: level.label_ja, spec: level.spec ?? "" },
+      {
+        labelEn: level.label_en,
+        labelJa: level.label_ja,
+        spec: level.spec ?? "",
+        exampleDialogue: level.example_dialogue as
+          | { speaker: "a" | "b"; ja: string; romaji: string; en: string }[]
+          | null,
+      },
       variant.description ?? "a routine visit",
     ),
   );
