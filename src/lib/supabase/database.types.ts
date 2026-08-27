@@ -267,7 +267,7 @@ export type Database = {
       }
       levels: {
         Row: {
-          example_dialogue: Json | null
+          example_dialogues: Json | null
           id: string
           label_en: string
           label_ja: string
@@ -276,7 +276,7 @@ export type Database = {
           spec: string | null
         }
         Insert: {
-          example_dialogue?: Json | null
+          example_dialogues?: Json | null
           id: string
           label_en: string
           label_ja: string
@@ -285,7 +285,7 @@ export type Database = {
           spec?: string | null
         }
         Update: {
-          example_dialogue?: Json | null
+          example_dialogues?: Json | null
           id?: string
           label_en?: string
           label_ja?: string

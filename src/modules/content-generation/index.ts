@@ -15,7 +15,7 @@ type LevelForContent = {
   label_en: string;
   label_ja: string;
   spec: string | null;
-  example_dialogue: Json;
+  example_dialogues: Json;
 };
 
 async function callGemini(prompt: string): Promise<string> {
@@ -55,8 +55,8 @@ async function generateAndStore(
         labelEn: level.label_en,
         labelJa: level.label_ja,
         spec: level.spec ?? "",
-        exampleDialogue: level.example_dialogue as
-          | { speaker: "a" | "b"; ja: string; romaji: string; en: string }[]
+        exampleDialogues: level.example_dialogues as
+          | { speaker: "a" | "b"; ja: string; romaji: string; en: string }[][]
           | null,
       },
       variant.description ?? "a routine visit",

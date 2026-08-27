@@ -8,7 +8,7 @@ type LevelContext = {
   labelEn: string;
   labelJa: string;
   spec: string;
-  exampleDialogue: ExampleLine[] | null;
+  exampleDialogues: ExampleLine[][] | null;
 };
 
 function formatExample(lines: ExampleLine[]) {
@@ -17,13 +17,19 @@ function formatExample(lines: ExampleLine[]) {
     .join("\n");
 }
 
+function formatExamples(examples: ExampleLine[][]) {
+  return examples
+    .map((lines, i) => `Example ${i + 1}:\n${formatExample(lines)}`)
+    .join("\n\n");
+}
+
 export function dialoguePrompt(
   scenario: ScenarioContext,
   level: LevelContext,
   variant: string,
 ) {
-  const exampleBlock = level.exampleDialogue?.length
-    ? `\n\nEXAMPLE OF THIS EXACT DIFFICULTY (different scene, but match this vocabulary/grammar ceiling and sentence length precisely):\n${formatExample(level.exampleDialogue)}`
+  const exampleBlock = level.exampleDialogues?.length
+    ? `\n\nEXAMPLES OF THIS EXACT DIFFICULTY (different scenes, but match this vocabulary/grammar ceiling and sentence length precisely — vary your phrasing across these patterns rather than copying just one):\n${formatExamples(level.exampleDialogues)}`
     : "";
 
   return `Write a short scripted Japanese dialogue for a listening comprehension drill.
