@@ -7,6 +7,8 @@ import { parseModelJson } from "@/lib/parse-model-json";
 import * as db from "./db";
 import { dialoguePrompt, gradePrompt } from "./prompts";
 import { gradeAnswer } from "./grading";
+import { validateGeneratedDialogue } from "./validation";
+import { logGenerationError } from "./error-log";
 
 type ScenarioForContent = { id: string; name_en: string; speaker_a: string; speaker_b: string };
 type VariantForContent = { id: string; description: string | null };
@@ -47,31 +49,51 @@ async function generateAndStore(
   scenario: ScenarioForContent,
   variant: VariantForContent,
   level: LevelForContent,
+  opts?: { background?: boolean },
 ) {
-  const raw = await callGemini(
-    dialoguePrompt(
-      { nameEn: scenario.name_en, speakerA: scenario.speaker_a, speakerB: scenario.speaker_b },
-      {
-        labelEn: level.label_en,
-        labelJa: level.label_ja,
-        spec: level.spec ?? "",
-        exampleDialogues: level.example_dialogues as
-          | { speaker: "a" | "b"; ja: string; romaji: string; en: string }[][]
-          | null,
-      },
-      variant.description ?? "a routine visit",
-    ),
-  );
-  const parsed = parseModelJson<{ setting: string; lines: GeneratedLineJson[] }>(raw);
-
-  return db.insertDialogueWithLines(supabase, {
+  const errorContext = {
     scenarioId: scenario.id,
     variantId: variant.id,
     level: level.id,
-    setting: parsed.setting,
-    model: GEMINI_MODEL,
-    lines: parsed.lines,
-  });
+    context: { background: opts?.background ?? false },
+  };
+
+  let parsed: { setting: string; lines: GeneratedLineJson[] };
+  try {
+    const raw = await callGemini(
+      dialoguePrompt(
+        { nameEn: scenario.name_en, speakerA: scenario.speaker_a, speakerB: scenario.speaker_b },
+        {
+          labelEn: level.label_en,
+          labelJa: level.label_ja,
+          spec: level.spec ?? "",
+          exampleDialogues: level.example_dialogues as
+            | { speaker: "a" | "b"; ja: string; romaji: string; en: string }[][]
+            | null,
+        },
+        variant.description ?? "a routine visit",
+      ),
+    );
+    parsed = parseModelJson<{ setting: string; lines: GeneratedLineJson[] }>(raw);
+    validateGeneratedDialogue(parsed);
+  } catch (err) {
+    await logGenerationError(supabase, { stage: "generation", error: err, ...errorContext });
+    throw err;
+  }
+
+  try {
+    return await db.insertDialogueWithLines(supabase, {
+      scenarioId: scenario.id,
+      variantId: variant.id,
+      level: level.id,
+      setting: parsed.setting,
+      model: GEMINI_MODEL,
+      lines: parsed.lines,
+    });
+  } catch (err) {
+    await logGenerationError(supabase, { stage: "generation", error: err, ...errorContext });
+    throw err;
+  }
 }
 
 /**
@@ -91,7 +113,9 @@ export async function getDialogue(
   if (pooled) {
     db.countPoolSize(supabase, key)
       .then((count) => {
-        if (count < db.POOL_MIN) return generateAndStore(supabase, scenario, variant, level);
+        if (count < db.POOL_MIN) {
+          return generateAndStore(supabase, scenario, variant, level, { background: true });
+        }
       })
       .catch((err) => console.error("[content-generation] pool top-up failed", err));
 
@@ -122,7 +146,11 @@ export async function grade(
     );
     return parseModelJson<{ verdict: Verdict; note: string }>(raw);
   } catch (err) {
-    console.error("[content-generation] Gemini grading failed, falling back to word-overlap", err);
+    await logGenerationError(supabase, {
+      stage: "grading",
+      error: err,
+      context: { lineId: params.lineId, dialogueId: line.dialogue_id },
+    });
     return gradeAnswer({
       userAnswer: params.userAnswer,
       expectedEn: line.en,

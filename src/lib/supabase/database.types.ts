@@ -188,6 +188,64 @@ export type Database = {
           },
         ]
       }
+      generation_errors: {
+        Row: {
+          category: string
+          context: Json | null
+          id: string
+          level: string | null
+          message: string
+          occurred_at: string
+          scenario_id: string | null
+          stage: string
+          variant_id: string | null
+        }
+        Insert: {
+          category: string
+          context?: Json | null
+          id?: string
+          level?: string | null
+          message: string
+          occurred_at?: string
+          scenario_id?: string | null
+          stage: string
+          variant_id?: string | null
+        }
+        Update: {
+          category?: string
+          context?: Json | null
+          id?: string
+          level?: string | null
+          message?: string
+          occurred_at?: string
+          scenario_id?: string | null
+          stage?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_errors_level_fkey"
+            columns: ["level"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_errors_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_errors_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scenario_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       level_events: {
         Row: {
           accepted: boolean | null

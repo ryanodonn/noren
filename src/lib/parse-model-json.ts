@@ -1,5 +1,3 @@
-import "server-only";
-
 export class ModelJsonParseError extends Error {
   constructor(public readonly raw: string) {
     super("Could not parse JSON out of model output");
