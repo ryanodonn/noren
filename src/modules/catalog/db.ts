@@ -70,6 +70,14 @@ export async function fetchActiveVariants(db: DbClient, scenarioId: string) {
   return data;
 }
 
+/** Every active variant across every scenario — for cross-scenario jobs
+ * like the seed-generation cron, not the per-scenario picker flow. */
+export async function fetchAllActiveVariants(db: DbClient) {
+  const { data, error } = await db.from("scenario_variants").select("*").eq("active", true);
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchCompletedVariantIds(
   db: DbClient,
   scenarioId: string,

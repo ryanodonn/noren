@@ -130,6 +130,28 @@ export async function getDialogueById(supabase: DbClient, dialogueId: string) {
   return db.fetchDialogueWithLines(supabase, dialogueId);
 }
 
+/** Pool depth per (variant, level) across the whole catalog, keyed
+ * `${variantId}::${level}` — for scanning for gaps (seed-generation cron),
+ * not the single-key lookups the drill path uses. A missing key means 0. */
+export async function getPoolDepths(supabase: DbClient) {
+  return db.fetchAllDialogueCounts(supabase);
+}
+
+/**
+ * Public entry point for generating and pooling one dialogue outside the
+ * normal drill request path — used by the seed-generation cron to fill
+ * gaps ahead of any learner hitting them. Same validation, error logging,
+ * and pool insert as a live pool-miss (generateAndStore, above).
+ */
+export async function generateDialogue(
+  supabase: DbClient,
+  scenario: ScenarioForContent,
+  variant: VariantForContent,
+  level: LevelForContent,
+) {
+  return generateAndStore(supabase, scenario, variant, level);
+}
+
 export async function getLine(supabase: DbClient, lineId: string) {
   return db.fetchLine(supabase, lineId);
 }

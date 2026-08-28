@@ -110,6 +110,25 @@ export async function fetchDialogueWithLines(db: DbClient, dialogueId: string) {
   return data;
 }
 
+/**
+ * Pool depth for every (variant, level) that has anything pooled at all,
+ * in one query — for scanning the whole catalog for gaps (the
+ * seed-generation cron) instead of one countPoolSize call per combo.
+ * Combos with zero rows simply don't appear; callers should treat a
+ * missing key as depth 0.
+ */
+export async function fetchAllDialogueCounts(db: DbClient) {
+  const { data, error } = await db.from("generated_dialogues").select("variant_id, level");
+  if (error) throw error;
+
+  const counts = new Map<string, number>();
+  for (const row of data) {
+    const key = `${row.variant_id}::${row.level}`;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return counts;
+}
+
 export async function fetchLine(db: DbClient, lineId: string) {
   const { data, error } = await db
     .from("generated_lines")

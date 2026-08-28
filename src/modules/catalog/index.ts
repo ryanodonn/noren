@@ -106,6 +106,12 @@ export async function getVariant(supabase: DbClient, variantId: string) {
   return db.fetchVariantById(supabase, variantId);
 }
 
+/** Every active variant across every scenario — for cross-scenario jobs
+ * (e.g. the seed-generation cron), not the per-user picker flow. */
+export async function listAllVariants(supabase: DbClient) {
+  return db.fetchAllActiveVariants(supabase);
+}
+
 export async function markScenarioCompletion(
   supabase: DbClient,
   params: {
