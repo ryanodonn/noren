@@ -252,8 +252,8 @@ export function DrillClient(props: {
                     {h.tier === 2 && (
                       <>
                         <span className="text-noren-dim">Key word · </span>
-                        <span className="jp">{h.keyJa}</span>
-                        <span className="text-noren-dim"> ({h.keyRomaji}) </span>
+                        {h.keyRomaji ?? h.keyJa}
+                        <span className="jp text-noren-dim"> ({h.keyJa}) </span>
                         {h.keyEn}
                       </>
                     )}
@@ -262,8 +262,8 @@ export function DrillClient(props: {
                         <div className="text-[10px] tracking-[0.2em] mb-1 text-noren-dim">
                           WHAT WAS SAID
                         </div>
-                        <div className="jp text-lg">{h.kana}</div>
-                        <div className="text-sm text-noren-dim">{h.romaji}</div>
+                        <div className="text-lg">{h.romaji}</div>
+                        <div className="jp text-sm text-noren-dim">{h.kana}</div>
                       </div>
                     )}
                   </div>
@@ -324,7 +324,7 @@ export function DrillClient(props: {
                 <div className="text-[10px] tracking-[0.2em] mb-2 text-noren-dim">
                   {tokensReconstructLine ? "TAP ANY WORD" : "WHAT WAS SAID"}
                 </div>
-                <div className="jp text-2xl leading-loose" style={{ wordBreak: "break-word" }}>
+                <div className="text-2xl leading-loose" style={{ wordBreak: "break-word" }}>
                   {tokensReconstructLine
                     ? line.tokens.map((tok, j) => (
                         <span
@@ -332,12 +332,12 @@ export function DrillClient(props: {
                           className={tok.en ? "tok" : undefined}
                           onClick={() => tok.en && onLookup(tok)}
                         >
-                          {tok.ja}
+                          {tok.romaji ?? tok.ja}{" "}
                         </span>
                       ))
-                    : line.ja}
+                    : (line.romaji ?? line.ja)}
                 </div>
-                <div className="text-sm mt-2 text-noren-dim">{line.romaji}</div>
+                <div className="jp text-sm mt-2 text-noren-dim">{line.ja}</div>
                 <div className="text-base mt-2">{line.en}</div>
               </div>
             </div>
@@ -352,9 +352,9 @@ export function DrillClient(props: {
         >
           <div className="max-w-2xl mx-auto flex items-start gap-4">
             <div>
-              <div className="jp text-2xl">{selected.ja}</div>
-              <div className="text-sm text-noren-amber">
-                {selected.kana} · {selected.romaji}
+              <div className="text-2xl">{selected.romaji ?? selected.ja}</div>
+              <div className="jp text-sm text-noren-amber">
+                {selected.ja} · {selected.kana}
               </div>
               <div className="text-base mt-1">{selected.en}</div>
             </div>

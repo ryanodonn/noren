@@ -28,12 +28,12 @@ export function ScriptRecap(props: {
               onClick={() =>
                 speak(l.ja, { lang: "ja-JP", voiceName: (l.speaker === "a" ? voiceA : voiceB) ?? undefined })
               }
-              className="jp text-base text-left"
+              className="text-base text-left"
             >
-              {l.ja}
+              {l.romaji ?? l.ja}
             </button>
           </div>
-          <div className="text-xs mt-1 text-noren-dim">{l.romaji}</div>
+          <div className="jp text-xs mt-1 text-noren-dim">{l.ja}</div>
           <div className="text-sm">{l.en}</div>
         </div>
       ))}
