@@ -1,4 +1,5 @@
 import "server-only";
+import { ThinkingLevel } from "@google/genai";
 import type { DbClient } from "@/lib/supabase/types";
 import type { Json } from "@/lib/supabase/database.types";
 import type { LevelId, Verdict } from "@/lib/types";
@@ -20,11 +21,25 @@ type LevelForContent = {
   example_dialogues: Json;
 };
 
-async function callGemini(prompt: string): Promise<string> {
+/**
+ * Neither task needs deep reasoning, and thinking is on by default for this
+ * model family — left unset, gemini-3.6-flash defaults to a "medium" level
+ * that was the dominant cost behind "grading feels slow," not network
+ * latency (confirmed: generation_errors showed zero grading failures, so
+ * the calls were succeeding, just slowly). Grading gets the lowest level
+ * since it's the most latency-sensitive interactive path and has the
+ * rule-based fallback as a safety net if MINIMAL is ever rejected;
+ * generation gets LOW instead of MINIMAL since a rejected/malformed
+ * response there has no fallback, just a retry.
+ */
+async function callGemini(prompt: string, thinkingLevel: ThinkingLevel): Promise<string> {
   const response = await gemini.models.generateContent({
     model: GEMINI_MODEL,
     contents: prompt,
-    config: { responseMimeType: "application/json" },
+    config: {
+      responseMimeType: "application/json",
+      thinkingConfig: { thinkingLevel },
+    },
   });
   const text = response.text;
   if (!text) throw new Error("Empty response from Gemini");
@@ -73,6 +88,7 @@ async function generateAndStore(
         },
         variant.description ?? "a routine visit",
       ),
+      ThinkingLevel.LOW,
     );
     parsed = parseModelJson<{ setting: string; lines: GeneratedLineJson[] }>(raw);
     validateGeneratedDialogue(parsed);
@@ -165,6 +181,7 @@ export async function grade(
   try {
     const raw = await callGemini(
       gradePrompt({ ja: line.ja, expectedEn: line.en, userAnswer: params.userAnswer }),
+      ThinkingLevel.MINIMAL,
     );
     return parseModelJson<{ verdict: Verdict; note: string }>(raw);
   } catch (err) {
