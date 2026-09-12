@@ -137,6 +137,19 @@ export async function countMastered(db: DbClient, userId: string) {
   return count ?? 0;
 }
 
+export async function fetchTopMissed(db: DbClient, userId: string, limit: number) {
+  const { data, error } = await db
+    .from("vocab_cards")
+    .select("token_ja, kana, romaji, en, times_missed")
+    .eq("user_id", userId)
+    .eq("suspended", false)
+    .gt("times_missed", 0)
+    .order("times_missed", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchDue(db: DbClient, userId: string, limit: number) {
   const { data, error } = await db
     .from("vocab_cards")

@@ -1,5 +1,5 @@
 "use client";
-import { useStartSession } from "@/app/useStartSession";
+import { useStartSession } from "@/app/pick/useStartSession";
 
 export function RetryButton(props: { scenarioId: string; level: string }) {
   const { start, isPending, error, elapsedSec } = useStartSession();

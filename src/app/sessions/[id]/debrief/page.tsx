@@ -102,7 +102,7 @@ export default async function DonePage({ params }: PageProps<"/sessions/[id]/deb
         <div className="flex gap-3 items-start">
           <RetryButton scenarioId={scenario.id} level={session.level} />
           <Link
-            href="/"
+            href="/pick"
             className="px-6 py-4 text-xs uppercase tracking-[0.2em] border border-noren-edge text-noren-dim"
           >
             Change

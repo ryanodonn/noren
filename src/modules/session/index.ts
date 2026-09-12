@@ -164,6 +164,38 @@ function computeStreak(completedAtIso: string[]): number {
   return streak;
 }
 
+/** Below this many attempts, a scenario's got-it rate is too noisy to call
+ * out as a weak spot — one bad line in a 3-attempt scenario isn't a trend. */
+const MIN_ATTEMPTS_FOR_WEAK_SCENARIO = 5;
+
+/** The scenario with the lowest got-it rate among those played enough to
+ * mean something, or null if nothing qualifies yet. */
+export async function getWeakestScenario(supabase: DbClient, userId: string) {
+  const rows = await db.getAttemptsByScenario(supabase, userId);
+
+  const byScenario = new Map<string, { total: number; gotIt: number; totalHints: number }>();
+  for (const row of rows) {
+    const bucket = byScenario.get(row.scenario_id) ?? { total: 0, gotIt: 0, totalHints: 0 };
+    for (const a of row.attempts) {
+      bucket.total++;
+      if (a.verdict === "got_it") bucket.gotIt++;
+      bucket.totalHints += a.hints_used;
+    }
+    byScenario.set(row.scenario_id, bucket);
+  }
+
+  let weakest: { scenarioId: string; total: number; gotItRate: number; meanHints: number } | null =
+    null;
+  for (const [scenarioId, s] of byScenario) {
+    if (s.total < MIN_ATTEMPTS_FOR_WEAK_SCENARIO) continue;
+    const gotItRate = s.gotIt / s.total;
+    if (!weakest || gotItRate < weakest.gotItRate) {
+      weakest = { scenarioId, total: s.total, gotItRate, meanHints: s.totalHints / s.total };
+    }
+  }
+  return weakest;
+}
+
 export async function getStats(supabase: DbClient, userId: string) {
   const [totalSessions, completedDates] = await Promise.all([
     db.countCompletedSessions(supabase, userId),

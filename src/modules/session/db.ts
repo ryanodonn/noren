@@ -125,6 +125,19 @@ export async function getCompletedSessionDates(db: DbClient, userId: string) {
   return data.map((s) => s.completed_at as string);
 }
 
+/** Every non-replay attempt this user has made, grouped by scenario via the
+ * owning session — for surfacing which scenario is going worst overall, not
+ * a single session's summary. */
+export async function getAttemptsByScenario(db: DbClient, userId: string) {
+  const { data, error } = await db
+    .from("sessions")
+    .select("scenario_id, attempts(verdict, hints_used)")
+    .eq("user_id", userId)
+    .eq("is_replay", false);
+  if (error) throw error;
+  return data;
+}
+
 export async function getSessionSummary(db: DbClient, sessionId: string) {
   const { data, error } = await db
     .from("attempts")

@@ -20,13 +20,13 @@ export async function NavBar() {
       </Link>
       <nav className="flex items-center gap-4 text-xs uppercase tracking-[0.15em]">
         <Link href="/" className="hover:text-noren-amber">
+          Home
+        </Link>
+        <Link href="/pick" className="hover:text-noren-amber">
           Pick
         </Link>
         <Link href="/vocab" className="hover:text-noren-amber">
           Vocab
-        </Link>
-        <Link href="/dashboard" className="hover:text-noren-amber">
-          Progress
         </Link>
         <form action={logout}>
           <button type="submit" className="text-noren-dim hover:text-noren-amber">

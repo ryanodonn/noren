@@ -34,7 +34,12 @@ export async function getEvidence(supabase: DbClient, userId: string) {
   const attempts = await db.getRecentAttempts(supabase, sessionIds, ROLLING_WINDOW);
   const stats = computeStats(attempts);
 
-  return { ...stats, minAttempts: MIN_ATTEMPTS, level: levelState.level as LevelId };
+  return {
+    ...stats,
+    minAttempts: MIN_ATTEMPTS,
+    windowSize: ROLLING_WINDOW,
+    level: levelState.level as LevelId,
+  };
 }
 
 /**

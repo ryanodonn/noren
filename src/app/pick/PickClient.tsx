@@ -41,15 +41,16 @@ export function PickClient(props: {
   levels: Level[];
   scenarios: Scenario[];
   defaultLevelId: string;
+  defaultScenarioId?: string;
   savedVoiceA: string | null;
   savedVoiceB: string | null;
 }) {
-  const { levels, scenarios, defaultLevelId, savedVoiceA, savedVoiceB } = props;
+  const { levels, scenarios, defaultLevelId, defaultScenarioId, savedVoiceA, savedVoiceB } = props;
   const { speak } = useSpeech();
   const { start: startSession, isPending, error, elapsedSec } = useStartSession();
 
   const [levelId, setLevelId] = useState(defaultLevelId);
-  const [scenarioId, setScenarioId] = useState(scenarios[0]?.id ?? "");
+  const [scenarioId, setScenarioId] = useState(defaultScenarioId ?? scenarios[0]?.id ?? "");
   const [jaVoices, setJaVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voiceA, setVoiceA] = useState<string | null>(savedVoiceA);
   const [voiceB, setVoiceB] = useState<string | null>(savedVoiceB);
