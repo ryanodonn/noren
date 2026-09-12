@@ -10,6 +10,9 @@ import { dialoguePrompt, gradePrompt } from "./prompts";
 import { gradeAnswer } from "./grading";
 import { validateGeneratedDialogue } from "./validation";
 import { logGenerationError } from "./error-log";
+import { classifyError } from "./classify-error";
+
+export const POOL_MIN = db.POOL_MIN;
 
 type ScenarioForContent = { id: string; name_en: string; speaker_a: string; speaker_b: string };
 type VariantForContent = { id: string; description: string | null };
@@ -46,6 +49,25 @@ async function callGemini(prompt: string, thinkingLevel: ThinkingLevel): Promise
   return text;
 }
 
+/**
+ * `generation_errors` (2026-09) showed every logged generation failure so
+ * far was Gemini 503 "high demand" — transient overload, gone on the very
+ * next request. One retry recovers those without meaningfully touching the
+ * free-tier daily quota (worst case, doubles the cost of an already-rare
+ * failure). Anything else classify-error would call `quota_exceeded`,
+ * `auth_error`, `parse_error`, etc. is not transient — retrying just burns
+ * another request for the same result, so only `network_error` retries.
+ */
+async function callGeminiWithRetry(prompt: string, thinkingLevel: ThinkingLevel): Promise<string> {
+  try {
+    return await callGemini(prompt, thinkingLevel);
+  } catch (err) {
+    if (classifyError(err) !== "network_error") throw err;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return callGemini(prompt, thinkingLevel);
+  }
+}
+
 type GeneratedLineJson = {
   speaker: "a" | "b";
   ja: string;
@@ -59,23 +81,39 @@ type GeneratedLineJson = {
   tokens: { ja: string; kana?: string; romaji?: string; en?: string }[];
 };
 
+/**
+ * Who triggered this generation — kept distinct from the error *category*
+ * because it answers a different question: not "what broke" but "did this
+ * actually block a learner." `live` blocks a real session waiting on
+ * `getDialogue`; `background_top_up` and `cron` are both maintenance work a
+ * learner never sees fail. Logged as stage `pool_top_up` (background_top_up)
+ * vs `generation` (live/cron) with `source` in `context` so a query can
+ * still tell the daily pre-seed cron apart from a live pool-miss even
+ * though both use stage `generation`.
+ */
+type GenerationSource = "live" | "background_top_up" | "cron";
+
 async function generateAndStore(
   supabase: DbClient,
   scenario: ScenarioForContent,
   variant: VariantForContent,
   level: LevelForContent,
-  opts?: { background?: boolean },
+  opts?: { source?: GenerationSource },
 ) {
+  const source = opts?.source ?? "live";
+  const stage: "generation" | "pool_top_up" =
+    source === "background_top_up" ? "pool_top_up" : "generation";
   const errorContext = {
     scenarioId: scenario.id,
     variantId: variant.id,
     level: level.id,
-    context: { background: opts?.background ?? false },
+    stage,
+    context: { source },
   };
 
   let parsed: { setting: string; lines: GeneratedLineJson[] };
   try {
-    const raw = await callGemini(
+    const raw = await callGeminiWithRetry(
       dialoguePrompt(
         { nameEn: scenario.name_en, speakerA: scenario.speaker_a, speakerB: scenario.speaker_b },
         {
@@ -93,7 +131,7 @@ async function generateAndStore(
     parsed = parseModelJson<{ setting: string; lines: GeneratedLineJson[] }>(raw);
     validateGeneratedDialogue(parsed);
   } catch (err) {
-    await logGenerationError(supabase, { stage: "generation", error: err, ...errorContext });
+    await logGenerationError(supabase, { error: err, ...errorContext });
     throw err;
   }
 
@@ -107,7 +145,7 @@ async function generateAndStore(
       lines: parsed.lines,
     });
   } catch (err) {
-    await logGenerationError(supabase, { stage: "generation", error: err, ...errorContext });
+    await logGenerationError(supabase, { error: err, ...errorContext });
     throw err;
   }
 }
@@ -130,7 +168,9 @@ export async function getDialogue(
     db.countPoolSize(supabase, key)
       .then((count) => {
         if (count < db.POOL_MIN) {
-          return generateAndStore(supabase, scenario, variant, level, { background: true });
+          return generateAndStore(supabase, scenario, variant, level, {
+            source: "background_top_up",
+          });
         }
       })
       .catch((err) => console.error("[content-generation] pool top-up failed", err));
@@ -165,7 +205,7 @@ export async function generateDialogue(
   variant: VariantForContent,
   level: LevelForContent,
 ) {
-  return generateAndStore(supabase, scenario, variant, level);
+  return generateAndStore(supabase, scenario, variant, level, { source: "cron" });
 }
 
 export async function getLine(supabase: DbClient, lineId: string) {

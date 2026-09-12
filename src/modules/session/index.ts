@@ -141,6 +141,41 @@ export async function getSummary(supabase: DbClient, sessionId: string) {
   return db.getSessionSummary(supabase, sessionId);
 }
 
+/** Consecutive calendar days (UTC) with a completed session, walking back
+ * from today. Today may be absent without breaking the streak — it just
+ * anchors the walk at yesterday instead, so the count doesn't visibly drop
+ * to zero before the learner has had a chance to play today. */
+function computeStreak(completedAtIso: string[]): number {
+  const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+  const days = new Set(completedAtIso.map((iso) => dayKey(new Date(iso))));
+
+  const cursor = new Date();
+  cursor.setUTCHours(0, 0, 0, 0);
+  if (!days.has(dayKey(cursor))) {
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+    if (!days.has(dayKey(cursor))) return 0;
+  }
+
+  let streak = 0;
+  while (days.has(dayKey(cursor))) {
+    streak++;
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+  }
+  return streak;
+}
+
+export async function getStats(supabase: DbClient, userId: string) {
+  const [totalSessions, completedDates] = await Promise.all([
+    db.countCompletedSessions(supabase, userId),
+    db.getCompletedSessionDates(supabase, userId),
+  ]);
+  return {
+    totalSessions,
+    currentStreak: computeStreak(completedDates),
+    lastSessionAt: completedDates[0] ?? null,
+  };
+}
+
 export async function completeSession(
   supabase: DbClient,
   params: { userId: string; sessionId: string; abandoned?: boolean },

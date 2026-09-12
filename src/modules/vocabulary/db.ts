@@ -101,6 +101,42 @@ export async function incrementLookedUp(
   if (error) throw error;
 }
 
+export async function countCards(db: DbClient, userId: string) {
+  const { count, error } = await db
+    .from("vocab_cards")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("suspended", false);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function countDue(db: DbClient, userId: string) {
+  const { count, error } = await db
+    .from("vocab_cards")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("suspended", false)
+    .lte("due_at", new Date().toISOString());
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** Stability in days a card must reach before it counts as "mastered" —
+ * i.e. FSRS predicts it'll still be remembered a month after review. */
+const MASTERED_STABILITY_DAYS = 21;
+
+export async function countMastered(db: DbClient, userId: string) {
+  const { count, error } = await db
+    .from("vocab_cards")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("suspended", false)
+    .gte("stability", MASTERED_STABILITY_DAYS);
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function fetchDue(db: DbClient, userId: string, limit: number) {
   const { data, error } = await db
     .from("vocab_cards")

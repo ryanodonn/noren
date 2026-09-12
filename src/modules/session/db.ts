@@ -101,6 +101,30 @@ export async function completeSession(
   if (error) throw error;
 }
 
+export async function countCompletedSessions(db: DbClient, userId: string) {
+  const { count, error } = await db
+    .from("sessions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("abandoned", false)
+    .not("completed_at", "is", null);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** Completion timestamps, most recent first — for computing a play streak. */
+export async function getCompletedSessionDates(db: DbClient, userId: string) {
+  const { data, error } = await db
+    .from("sessions")
+    .select("completed_at")
+    .eq("user_id", userId)
+    .eq("abandoned", false)
+    .not("completed_at", "is", null)
+    .order("completed_at", { ascending: false });
+  if (error) throw error;
+  return data.map((s) => s.completed_at as string);
+}
+
 export async function getSessionSummary(db: DbClient, sessionId: string) {
   const { data, error } = await db
     .from("attempts")

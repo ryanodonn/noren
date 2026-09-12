@@ -103,6 +103,15 @@ export async function getDue(supabase: DbClient, userId: string, limit = 20) {
   return db.fetchDue(supabase, userId, limit);
 }
 
+export async function getStats(supabase: DbClient, userId: string) {
+  const [totalCards, dueCount, masteredCount] = await Promise.all([
+    db.countCards(supabase, userId),
+    db.countDue(supabase, userId),
+    db.countMastered(supabase, userId),
+  ]);
+  return { totalCards, dueCount, masteredCount };
+}
+
 export async function review(
   supabase: DbClient,
   cardId: string,

@@ -2,12 +2,39 @@ import "server-only";
 import type { DbClient } from "@/lib/supabase/types";
 import type { LevelId } from "@/lib/types";
 import * as db from "./db";
-import { computeRecommendation, ROLLING_WINDOW, DISMISS_COOLDOWN_ATTEMPTS } from "./algorithm";
+import {
+  computeRecommendation,
+  computeStats,
+  ROLLING_WINDOW,
+  MIN_ATTEMPTS,
+  DISMISS_COOLDOWN_ATTEMPTS,
+} from "./algorithm";
 
 export async function getStatus(supabase: DbClient, userId: string) {
   const levelState = await db.getLevelState(supabase, userId);
   const recommendation = levelState ? await db.getPendingEvent(supabase, userId) : null;
   return { levelState, recommendation };
+}
+
+/**
+ * Same evidence `evaluate()` computes internally (rolling window at the
+ * current level), exposed for read-only display (e.g. a stats dashboard)
+ * rather than as an evaluate-and-possibly-recommend side effect.
+ */
+export async function getEvidence(supabase: DbClient, userId: string) {
+  const levelState = await db.getLevelState(supabase, userId);
+  if (!levelState) return null;
+
+  const levelSessions = await db.getSessionIdsAtLevel(
+    supabase,
+    userId,
+    levelState.level as LevelId,
+  );
+  const sessionIds = levelSessions.map((s) => s.id);
+  const attempts = await db.getRecentAttempts(supabase, sessionIds, ROLLING_WINDOW);
+  const stats = computeStats(attempts);
+
+  return { ...stats, minAttempts: MIN_ATTEMPTS, level: levelState.level as LevelId };
 }
 
 /**

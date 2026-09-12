@@ -8,8 +8,12 @@ import * as ContentGeneration from "@/modules/content-generation";
 // call, not the sum. Keep this if the pick count ever grows past ~6-8.
 export const maxDuration = 60;
 
-/** Below this pooled depth for a (variant, level), it counts as a gap. */
-const TARGET_DEPTH = 2;
+/**
+ * Below this pooled depth for a (variant, level), it counts as a gap.
+ * Shares ContentGeneration.POOL_MIN so the cron's pre-seed target and the
+ * live background top-up threshold can't drift apart.
+ */
+const TARGET_DEPTH = ContentGeneration.POOL_MIN;
 
 type PickResult =
   | { ok: true; scenarioSlug: string; level: string; variantId: string }

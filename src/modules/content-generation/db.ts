@@ -5,7 +5,10 @@ import { PROMPT_VERSION } from "./prompts";
 
 type PoolKey = { scenarioId: string; variantId: string; level: LevelId };
 
-export const POOL_MIN = 2;
+// Was 2 — too shallow. The hand-authored seed pipeline writes exactly one
+// dialogue per (scenario, variant) at kodomo, so a pool capped at 2 meant
+// replaying a variant surfaced the same 1-2 dialogues almost every time.
+export const POOL_MIN = 5;
 
 /**
  * Picks randomly among the pool for this key, for replay variety. Not

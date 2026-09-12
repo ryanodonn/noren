@@ -25,10 +25,15 @@ type Scenario = {
 
 const VOICE_RANK = ["google", "kyoko", "o-ren", "oren", "hattori", "otoya", "nanami", "ayumi"];
 
+// Named voices are ranked by VOICE_RANK regardless of hosting. Everything
+// else falls back to a flat rank of 50, tie-broken toward network-hosted
+// voices (localService: false) — on Windows Chrome the local fallback is
+// the OS's stock SAPI voice (e.g. "Microsoft Haruka"), which is far more
+// robotic than any network-hosted alternative Chrome exposes.
 function rankVoice(v: SpeechSynthesisVoice) {
   const n = v.name.toLowerCase();
   const i = VOICE_RANK.findIndex((r) => n.includes(r));
-  const base = i === -1 ? 50 : i;
+  const base = i === -1 ? 50 + (v.localService ? 1 : 0) : i;
   return base + (/compact/.test(n) ? 100 : 0);
 }
 
@@ -48,6 +53,12 @@ export function PickClient(props: {
   const [jaVoices, setJaVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voiceA, setVoiceA] = useState<string | null>(savedVoiceA);
   const [voiceB, setVoiceB] = useState<string | null>(savedVoiceB);
+  // Voice lists load asynchronously and can improve after the first pass
+  // (e.g. a network-hosted voice arriving after the local one). Keep
+  // auto-picking the best available voice until the learner explicitly
+  // chooses one — otherwise an early robotic default sticks forever.
+  const [autoPickedA, setAutoPickedA] = useState(savedVoiceA === null);
+  const [autoPickedB, setAutoPickedB] = useState(savedVoiceB === null);
 
   const scenario = scenarios.find((s) => s.id === scenarioId) ?? scenarios[0];
 
@@ -60,12 +71,12 @@ export function PickClient(props: {
       );
       if (ja.length === 0) return;
       setJaVoices(ja);
-      setVoiceA((prev) => prev || ja[0]?.name || null);
-      setVoiceB((prev) => prev || (ja[1] ?? ja[0])?.name || null);
+      if (autoPickedA) setVoiceA(ja[0]?.name ?? null);
+      if (autoPickedB) setVoiceB((ja[1] ?? ja[0])?.name ?? null);
     };
     load();
     window.speechSynthesis.onvoiceschanged = load;
-  }, []);
+  }, [autoPickedA, autoPickedB]);
 
   function testVoice(name: string | null) {
     if (!name) return;
@@ -73,13 +84,17 @@ export function PickClient(props: {
   }
 
   function onVoiceAChange(name: string) {
+    setAutoPickedA(false);
     setVoiceA(name);
     saveVoiceAssignments({ voiceA: name, voiceB });
   }
   function onVoiceBChange(name: string) {
+    setAutoPickedB(false);
     setVoiceB(name);
     saveVoiceAssignments({ voiceA, voiceB: name });
   }
+
+  const onlyLocalVoices = jaVoices.length > 0 && jaVoices.every((v) => v.localService);
 
   return (
     <>
@@ -187,6 +202,13 @@ export function PickClient(props: {
             Two different voices makes the dialogue far easier to follow. Best first in the list —
             skip anything marked Compact.
           </p>
+          {onlyLocalVoices && (
+            <p className="text-xs mb-8 text-noren-dim">
+              Sounding robotic? Your browser is only exposing your OS&apos;s built-in Japanese
+              voice. On Windows, installing a natural voice (Settings → Time &amp; Language →
+              Speech → Manage voices) or trying Microsoft Edge usually sounds much better.
+            </p>
+          )}
         </>
       ) : (
         <p className="text-sm mb-8 text-noren-rose">

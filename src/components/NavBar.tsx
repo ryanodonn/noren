@@ -25,6 +25,9 @@ export async function NavBar() {
         <Link href="/vocab" className="hover:text-noren-amber">
           Vocab
         </Link>
+        <Link href="/dashboard" className="hover:text-noren-amber">
+          Progress
+        </Link>
         <form action={logout}>
           <button type="submit" className="text-noren-dim hover:text-noren-amber">
             Sign out
