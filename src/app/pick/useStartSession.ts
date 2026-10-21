@@ -1,43 +1,41 @@
 "use client";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { startSessionAction } from "./actions";
+import { useState, useTransition } from "react";
+import { startSessionAction, type StartSessionResult } from "./actions";
 
-/** Starting a session means a live Gemini call on a pool miss (10-30s+,
- * longer under load) that can fail (network, parse, free-tier quota -
- * services.md §2.3). Shared so every "start a session" entry point gets
- * the same elapsed-time feedback and the same graceful failure instead
- * of an uncaught server-action error crashing the page. */
+/**
+ * Starting a session is now a pool read (~100ms), not a 10-30s Gemini call —
+ * generation moved entirely to the nightly cron (services.md §2.3). So the
+ * elapsed-second counter and progress bar this hook used to drive are gone;
+ * what's left is turning a typed failure into a sentence a learner can act
+ * on, shared across every "start a session" entry point.
+ *
+ * The important case is `pool_empty`: with no live generation, a scene with
+ * nothing pooled cannot be fixed by retrying, so the copy has to say "try
+ * another scene" rather than "try again".
+ */
+const FAILURE_COPY: Record<StartSessionResult["reason"], string> = {
+  pool_empty:
+    "No dialogue is written for this scene at this level yet. New ones are written overnight — try another scene or level in the meantime.",
+  no_variants: "This scene has nothing left to play at this level. Try another level.",
+  unknown: "Couldn't start the session. Try again in a moment.",
+};
+
 export function useStartSession() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
-  const [elapsedSec, setElapsedSec] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (isPending) {
-      timerRef.current = setInterval(() => setElapsedSec((s) => s + 1), 1000);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isPending]);
 
   function start(params: { scenarioId: string; level: string }) {
     setError("");
-    setElapsedSec(0);
     startTransition(async () => {
       try {
-        await startSessionAction(params);
+        const result = await startSessionAction(params);
+        // A successful start redirects and never returns a result.
+        if (result) setError(FAILURE_COPY[result.reason]);
       } catch {
-        setError(
-          "Couldn't build the dialogue — the generator may be rate-limited or briefly down. Try again in a moment.",
-        );
+        setError(FAILURE_COPY.unknown);
       }
     });
   }
 
-  return { start, isPending, error, elapsedSec };
+  return { start, isPending, error };
 }

@@ -64,4 +64,39 @@ describe("gradeAnswer", () => {
     });
     expect(result.verdict).toBe("got_it");
   });
+
+  it("reports the score it graded on", () => {
+    const exact = gradeAnswer({ userAnswer: "Here you go.", expectedEn: "Here you go.", acceptableEn: [] });
+    expect(exact.score).toBe(1);
+
+    const miss = gradeAnswer({ userAnswer: "goodbye", expectedEn: "Here you go.", acceptableEn: [] });
+    expect(miss.score).toBe(0);
+  });
+
+  // The regression that motivated phrasings.ts: the same sentence, differing
+  // only by a contraction, used to score 0.667 and grade `close`.
+  it("credits a contraction difference as got_it", () => {
+    const expanded = gradeAnswer({
+      userAnswer: "I would like a bag",
+      expectedEn: "I'd like a bag",
+      acceptableEn: [],
+    });
+    expect(expanded.verdict).toBe("got_it");
+
+    const contracted = gradeAnswer({
+      userAnswer: "I'd like a bag",
+      expectedEn: "I would like a bag",
+      acceptableEn: [],
+    });
+    expect(contracted.verdict).toBe("got_it");
+  });
+
+  it("still misses a genuine semantic difference the rules cannot bridge", () => {
+    const result = gradeAnswer({
+      userAnswer: "warm it up",
+      expectedEn: "heat it up",
+      acceptableEn: [],
+    });
+    expect(result.verdict).not.toBe("got_it");
+  });
 });

@@ -1,239 +1,135 @@
 import "server-only";
-import { ThinkingLevel } from "@google/genai";
 import type { DbClient } from "@/lib/supabase/types";
-import type { Json } from "@/lib/supabase/database.types";
-import type { LevelId, Verdict } from "@/lib/types";
-import { gemini, GEMINI_MODEL } from "@/lib/gemini";
-import { parseModelJson } from "@/lib/parse-model-json";
+import type { Verdict } from "@/lib/types";
 import * as db from "./db";
-import { dialoguePrompt, gradePrompt } from "./prompts";
 import { gradeAnswer } from "./grading";
-import { validateGeneratedDialogue } from "./validation";
-import { logGenerationError } from "./error-log";
-import { classifyError } from "./classify-error";
+import { generateAndStore } from "./generate";
+import type {
+  ScenarioForContent,
+  VariantForContent,
+  LevelForContent,
+  RetryAdmission,
+} from "./generate";
 
 export const POOL_MIN = db.POOL_MIN;
-
-type ScenarioForContent = { id: string; name_en: string; speaker_a: string; speaker_b: string };
-type VariantForContent = { id: string; description: string | null };
-type LevelForContent = {
-  id: LevelId;
-  label_en: string;
-  label_ja: string;
-  spec: string | null;
-  example_dialogues: Json;
-};
-
-/**
- * Neither task needs deep reasoning, and thinking is on by default for this
- * model family — left unset, gemini-3.6-flash defaults to a "medium" level
- * that was the dominant cost behind "grading feels slow," not network
- * latency (confirmed: generation_errors showed zero grading failures, so
- * the calls were succeeding, just slowly). Grading gets the lowest level
- * since it's the most latency-sensitive interactive path and has the
- * rule-based fallback as a safety net if MINIMAL is ever rejected;
- * generation gets LOW instead of MINIMAL since a rejected/malformed
- * response there has no fallback, just a retry.
- */
-async function callGemini(prompt: string, thinkingLevel: ThinkingLevel): Promise<string> {
-  const response = await gemini.models.generateContent({
-    model: GEMINI_MODEL,
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      thinkingConfig: { thinkingLevel },
-    },
-  });
-  const text = response.text;
-  if (!text) throw new Error("Empty response from Gemini");
-  return text;
-}
+export const GAP_TARGET_DEPTH = db.GAP_TARGET_DEPTH;
+export { poolDepthKey } from "./db";
+export type { GenerationSource } from "./error-log";
+export { planGenerationGaps, type GapCandidate, type PlanGapsOptions } from "./plan-gaps";
+export { ESTIMATED_CALL_MS } from "./generate";
+export type { RetryAdmission } from "./generate";
+export { getGeneratorHealth } from "./health";
+export type { GeneratorHealth, HealthSignal } from "./health";
+export type { QuotaLimitKind } from "./classify-error";
 
 /**
- * `generation_errors` (2026-09) showed every logged generation failure so
- * far was Gemini 503 "high demand" — transient overload, gone on the very
- * next request. One retry recovers those without meaningfully touching the
- * free-tier daily quota (worst case, doubles the cost of an already-rare
- * failure). Anything else classify-error would call `quota_exceeded`,
- * `auth_error`, `parse_error`, etc. is not transient — retrying just burns
- * another request for the same result, so only `network_error` retries.
+ * No dialogue is pooled for this (scenario, variant, level).
+ *
+ * This is a real dead end until the seed cron fills the key, and that is a
+ * deliberate trade-off rather than an oversight: Gemini is cron-only now, so
+ * there is nothing to generate from on a learner's request. Callers should
+ * turn this into a specific "nothing pooled for this scene yet" message —
+ * not a generic failure — so the learner knows to pick another scene rather
+ * than retrying into the same wall.
  */
-async function callGeminiWithRetry(prompt: string, thinkingLevel: ThinkingLevel): Promise<string> {
-  try {
-    return await callGemini(prompt, thinkingLevel);
-  } catch (err) {
-    if (classifyError(err) !== "network_error") throw err;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return callGemini(prompt, thinkingLevel);
-  }
-}
-
-type GeneratedLineJson = {
-  speaker: "a" | "b";
-  ja: string;
-  kana: string;
-  romaji: string;
-  en: string;
-  gist: string;
-  key_ja: string | null;
-  key_romaji: string | null;
-  key_en: string | null;
-  tokens: { ja: string; kana?: string; romaji?: string; en?: string }[];
-};
-
-/**
- * Who triggered this generation — kept distinct from the error *category*
- * because it answers a different question: not "what broke" but "did this
- * actually block a learner." `live` blocks a real session waiting on
- * `getDialogue`; `background_top_up` and `cron` are both maintenance work a
- * learner never sees fail. Logged as stage `pool_top_up` (background_top_up)
- * vs `generation` (live/cron) with `source` in `context` so a query can
- * still tell the daily pre-seed cron apart from a live pool-miss even
- * though both use stage `generation`.
- */
-type GenerationSource = "live" | "background_top_up" | "cron";
-
-async function generateAndStore(
-  supabase: DbClient,
-  scenario: ScenarioForContent,
-  variant: VariantForContent,
-  level: LevelForContent,
-  opts?: { source?: GenerationSource },
-) {
-  const source = opts?.source ?? "live";
-  const stage: "generation" | "pool_top_up" =
-    source === "background_top_up" ? "pool_top_up" : "generation";
-  const errorContext = {
-    scenarioId: scenario.id,
-    variantId: variant.id,
-    level: level.id,
-    stage,
-    context: { source },
-  };
-
-  let parsed: { setting: string; lines: GeneratedLineJson[] };
-  try {
-    const raw = await callGeminiWithRetry(
-      dialoguePrompt(
-        { nameEn: scenario.name_en, speakerA: scenario.speaker_a, speakerB: scenario.speaker_b },
-        {
-          labelEn: level.label_en,
-          labelJa: level.label_ja,
-          spec: level.spec ?? "",
-          exampleDialogues: level.example_dialogues as
-            | { speaker: "a" | "b"; ja: string; romaji: string; en: string }[][]
-            | null,
-        },
-        variant.description ?? "a routine visit",
-      ),
-      ThinkingLevel.LOW,
-    );
-    parsed = parseModelJson<{ setting: string; lines: GeneratedLineJson[] }>(raw);
-    validateGeneratedDialogue(parsed);
-  } catch (err) {
-    await logGenerationError(supabase, { error: err, ...errorContext });
-    throw err;
-  }
-
-  try {
-    return await db.insertDialogueWithLines(supabase, {
-      scenarioId: scenario.id,
-      variantId: variant.id,
-      level: level.id,
-      setting: parsed.setting,
-      model: GEMINI_MODEL,
-      lines: parsed.lines,
-    });
-  } catch (err) {
-    await logGenerationError(supabase, { error: err, ...errorContext });
-    throw err;
+export class PoolEmptyError extends Error {
+  constructor(readonly key: { scenarioId: string; variantId: string; level: string }) {
+    super(`No pooled dialogue for ${key.scenarioId}/${key.variantId}/${key.level}`);
+    this.name = "PoolEmptyError";
   }
 }
 
 /**
- * Pool hit → serve, topping up in the background when the pool is thin.
- * Pool miss → generate live via Gemini, insert, serve. Old hand-authored
- * rows and new Gemini rows share the same pool (services.md §2.3).
+ * Serves a pooled dialogue, preferring one this learner hasn't heard.
+ *
+ * Pool-only: no Gemini call, no background top-up. Both were removed once the
+ * data showed no learner had *ever* triggered a live generation (zero
+ * `source='live'` rows in the whole log) while the interactive paths were
+ * quietly consuming the free tier's entire daily request budget — all of the
+ * cost, none of the benefit. See services.md §2.3.
+ *
+ * `excludeDialogueIds` comes from the caller because dialogue history lives
+ * in Session's tables, which this module must not query. Throws
+ * `PoolEmptyError` when the key has nothing pooled.
  */
 export async function getDialogue(
   supabase: DbClient,
   scenario: ScenarioForContent,
   variant: VariantForContent,
   level: LevelForContent,
+  opts?: { excludeDialogueIds?: readonly string[] },
 ) {
   const key = { scenarioId: scenario.id, variantId: variant.id, level: level.id };
-  const pooled = await db.findPooledDialogue(supabase, key);
+  const pooled = await db.findPooledDialogue(supabase, key, {
+    excludeIds: opts?.excludeDialogueIds,
+  });
+  if (!pooled) throw new PoolEmptyError(key);
 
-  if (pooled) {
-    db.countPoolSize(supabase, key)
-      .then((count) => {
-        if (count < db.POOL_MIN) {
-          return generateAndStore(supabase, scenario, variant, level, {
-            source: "background_top_up",
-          });
-        }
-      })
-      .catch((err) => console.error("[content-generation] pool top-up failed", err));
-
-    return db.fetchDialogueWithLines(supabase, pooled.id);
-  }
-
-  const dialogueId = await generateAndStore(supabase, scenario, variant, level);
-  return db.fetchDialogueWithLines(supabase, dialogueId);
+  return {
+    dialogue: await db.fetchDialogueWithLines(supabase, pooled.id),
+    alreadyHeard: pooled.alreadyHeard,
+  };
 }
 
 export async function getDialogueById(supabase: DbClient, dialogueId: string) {
   return db.fetchDialogueWithLines(supabase, dialogueId);
 }
 
-/** Pool depth per (variant, level) across the whole catalog, keyed
- * `${variantId}::${level}` — for scanning for gaps (seed-generation cron),
- * not the single-key lookups the drill path uses. A missing key means 0. */
+/**
+ * Pool depth for every key with anything pooled, keyed by `poolDepthKey`.
+ * For scanning the catalog for gaps (the seed cron), not the single-key
+ * lookups the drill path uses. A missing key means depth 0.
+ */
 export async function getPoolDepths(supabase: DbClient) {
   return db.fetchAllDialogueCounts(supabase);
 }
 
 /**
- * Public entry point for generating and pooling one dialogue outside the
- * normal drill request path — used by the seed-generation cron to fill
- * gaps ahead of any learner hitting them. Same validation, error logging,
- * and pool insert as a live pool-miss (generateAndStore, above).
+ * Generates one dialogue and pools it. The seed cron is the only caller —
+ * this is the sole path in the app that spends a Gemini request.
+ *
+ * `admit` lets the caller refuse a retry it can't afford; see the cron's
+ * wall-clock and request budgets.
  */
 export async function generateDialogue(
   supabase: DbClient,
   scenario: ScenarioForContent,
   variant: VariantForContent,
   level: LevelForContent,
+  opts?: { admit?: RetryAdmission },
 ) {
-  return generateAndStore(supabase, scenario, variant, level, { source: "cron" });
+  return generateAndStore(supabase, scenario, variant, level, {
+    source: "cron",
+    admit: opts?.admit,
+  });
 }
 
 export async function getLine(supabase: DbClient, lineId: string) {
   return db.fetchLine(supabase, lineId);
 }
 
+/**
+ * Rule-based only — no LLM, no network, no fallback branch because there is
+ * nothing left to fall back *from* (services.md §2.3).
+ *
+ * Gemini used to grade here with `gradeAnswer` as a safety net. It was
+ * removed because the free tier cannot support an interactive path: grading
+ * alone hit the per-day request cap 31 times, competing with the seed cron
+ * for the same tiny budget. Grading now costs one indexed row read (~50ms
+ * instead of 1-2s) and cannot fail past that read.
+ *
+ * The honest trade-off: paraphrase tolerance is now whatever the line's own
+ * `en`, its `acceptable_en`, and phrasings.ts cover between them. See
+ * grading.ts on the `got_it` threshold.
+ */
 export async function grade(
   supabase: DbClient,
   params: { lineId: string; userAnswer: string },
-): Promise<{ verdict: Verdict; note: string | null }> {
+): Promise<{ verdict: Verdict; note: string | null; score: number }> {
   const line = await db.fetchLine(supabase, params.lineId);
-
-  try {
-    const raw = await callGemini(
-      gradePrompt({ ja: line.ja, expectedEn: line.en, userAnswer: params.userAnswer }),
-      ThinkingLevel.MINIMAL,
-    );
-    return parseModelJson<{ verdict: Verdict; note: string }>(raw);
-  } catch (err) {
-    await logGenerationError(supabase, {
-      stage: "grading",
-      error: err,
-      context: { lineId: params.lineId, dialogueId: line.dialogue_id },
-    });
-    return gradeAnswer({
-      userAnswer: params.userAnswer,
-      expectedEn: line.en,
-      acceptableEn: (line.acceptable_en as string[]) ?? [],
-    });
-  }
+  return gradeAnswer({
+    userAnswer: params.userAnswer,
+    expectedEn: line.en,
+    acceptableEn: (line.acceptable_en as string[]) ?? [],
+  });
 }

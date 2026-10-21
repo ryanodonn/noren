@@ -1,11 +1,24 @@
-// Rule-based grading — no LLM. The learner translates a Japanese line into
+// Rule-based grading — no LLM, and since 2026-10 the *only* grading path
+// (see docs/services.md §2.3). The learner translates a Japanese line into
 // English; this compares their answer against the line's own `en` field plus
-// an authored `acceptable_en` set (see docs/services.md §2.3). Kept pure/
-// DB-free so it's directly unit-testable, matching the Progression/
+// its `acceptable_en` set, each expanded over mechanical phrasing variants.
+// Kept pure/DB-free so it's directly unit-testable, matching the Progression/
 // Vocabulary algorithm split.
 import type { Verdict } from "@/lib/types";
+import { expandPhrasings } from "./phrasings";
 
 const CLOSE_THRESHOLD = 0.5;
+
+/**
+ * Not the lenient threshold it looks like: for word sets of sizes a and b
+ * sharing k words the Dice coefficient is 2k/(a+b), so the best two
+ * *non-identical* sets can score is 2a/(2a+1) — 0.909 for a five-word
+ * answer. Clearing 0.97 needs ~17 words, and lines here are 3-8. So for any
+ * real line this is "the normalized word sets are equal", with no partial
+ * credit band above `close`. That makes candidate breadth (`acceptable_en`
+ * plus phrasings.ts) the entire accuracy budget — see services.md §2.3.
+ */
+const GOT_IT_THRESHOLD = 0.97;
 
 const PUNCTUATION = /[.,!?;:'"、。！？]/g;
 
@@ -43,17 +56,30 @@ export function bestSimilarity(answer: string, candidates: string[]): number {
   return Math.max(...candidates.map((c) => similarity(answer, c)));
 }
 
+/**
+ * `score` is returned so it can be persisted on the attempt (`attempts.score`)
+ * — the thresholds above were set when every line had hand-authored
+ * `acceptable_en`, and retuning them should be an evidence-based decision
+ * rather than a guess.
+ */
 export function gradeAnswer(params: {
   userAnswer: string;
   expectedEn: string;
   acceptableEn: string[];
-}): { verdict: Verdict; note: string | null } {
-  const pool = [params.expectedEn, ...params.acceptableEn];
+}): { verdict: Verdict; note: string | null; score: number } {
+  // Expanding only the candidates is sufficient: the phrasing rules are
+  // bidirectional, so a learner's "I would like a bag" is reached from a
+  // candidate "I'd like a bag" and vice versa.
+  const pool = [params.expectedEn, ...params.acceptableEn].flatMap(expandPhrasings);
   const score = bestSimilarity(params.userAnswer, pool);
 
-  if (score >= 0.97) return { verdict: "got_it", note: null };
+  if (score >= GOT_IT_THRESHOLD) return { verdict: "got_it", note: null, score };
   if (score >= CLOSE_THRESHOLD) {
-    return { verdict: "close", note: "Close — check the expected translation below." };
+    return { verdict: "close", note: "Close — check the expected translation below.", score };
   }
-  return { verdict: "missed", note: "Not quite — check the expected translation below." };
+  return {
+    verdict: "missed",
+    note: "Not quite — check the expected translation below.",
+    score,
+  };
 }

@@ -18,7 +18,7 @@ export async function submitAttempt(params: {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  const { verdict, note } = await ContentGeneration.grade(supabase, {
+  const { verdict, note, score } = await ContentGeneration.grade(supabase, {
     lineId: params.lineId,
     userAnswer: params.userAnswer,
   });
@@ -33,6 +33,7 @@ export async function submitAttempt(params: {
     hintsUsed: params.hintsUsed,
     note,
     latencyMs: params.latencyMs,
+    score,
   });
 
   return { verdict, note };

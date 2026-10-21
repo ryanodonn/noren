@@ -21,6 +21,16 @@ export async function getLevelState(db: DbClient, userId: string) {
   return data;
 }
 
+/**
+ * Every level at least one learner is currently on. Reads only this module's
+ * own `level_state`.
+ */
+export async function listActiveLevels(db: DbClient): Promise<string[]> {
+  const { data, error } = await db.from("level_state").select("level");
+  if (error) throw error;
+  return [...new Set(data.map((row) => row.level))];
+}
+
 export async function ensureLevelState(
   db: DbClient,
   userId: string,

@@ -12,7 +12,7 @@
 //
 // Validation (hard-fails the whole run on any violation, so a bad entry
 // never silently ships):
-//   - 6-8 lines, speakers alternate starting with "a"
+//   - 6-8 lines, speakers strictly alternate (either speaker may open)
 //   - every required field present and non-empty
 //   - each line's tokens[].ja concatenate to exactly reconstruct that line's ja
 //     (this is what makes the post-answer "tap any word" reveal work at all)
@@ -41,10 +41,21 @@ function validateDialogue(d, file) {
   if (!Array.isArray(d.lines) || d.lines.length < 6 || d.lines.length > 8) {
     errors.push(`lines must be 6-8, got ${d.lines?.length}`);
   }
+  // Strict alternation, either speaker opening — kept in step with
+  // src/modules/content-generation/validation.ts, which explains why
+  // relabeling to force an "a" opener would be unsafe.
+  const opener = (d.lines ?? [])[0]?.speaker;
+  if (d.lines?.length && opener !== "a" && opener !== "b") {
+    errors.push(`line 0: speaker must be "a" or "b", got "${opener}"`);
+  }
+  const second = opener === "a" ? "b" : "a";
+
   (d.lines ?? []).forEach((line, i) => {
-    const expectedSpeaker = i % 2 === 0 ? "a" : "b";
-    if (line.speaker !== expectedSpeaker) {
-      errors.push(`line ${i}: expected speaker "${expectedSpeaker}", got "${line.speaker}"`);
+    if (opener === "a" || opener === "b") {
+      const expectedSpeaker = i % 2 === 0 ? opener : second;
+      if (line.speaker !== expectedSpeaker) {
+        errors.push(`line ${i}: expected speaker "${expectedSpeaker}", got "${line.speaker}"`);
+      }
     }
     for (const field of REQUIRED_LINE_FIELDS) {
       if (!line[field] || (Array.isArray(line[field]) && line[field].length === 0)) {

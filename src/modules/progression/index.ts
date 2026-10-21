@@ -17,6 +17,16 @@ export async function getStatus(supabase: DbClient, userId: string) {
 }
 
 /**
+ * Distinct current levels across all learners — so maintenance jobs can
+ * prioritize content for levels someone is actually playing rather than
+ * spreading effort across a catalog that is mostly unreachable. Used by the
+ * seed-generation cron; see content-generation's planGenerationGaps.
+ */
+export async function listActiveLevels(supabase: DbClient): Promise<LevelId[]> {
+  return db.listActiveLevels(supabase);
+}
+
+/**
  * Same evidence `evaluate()` computes internally (rolling window at the
  * current level), exposed for read-only display (e.g. a stats dashboard)
  * rather than as an evaluate-and-possibly-recommend side effect.

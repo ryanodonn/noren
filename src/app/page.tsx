@@ -5,6 +5,7 @@ import * as Catalog from "@/modules/catalog";
 import * as Progression from "@/modules/progression";
 import * as Session from "@/modules/session";
 import * as Vocabulary from "@/modules/vocabulary";
+import * as ContentGeneration from "@/modules/content-generation";
 import { acceptRecommendation, dismissRecommendation } from "./actions";
 
 function pct(rate: number) {
@@ -18,7 +19,7 @@ export default async function HomePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [levels, scenarios, { levelState, recommendation }, evidence, weakestScenario, sessionStats, vocabStats, topMissed] =
+  const [levels, scenarios, { levelState, recommendation }, evidence, weakestScenario, sessionStats, vocabStats, topMissed, variants] =
     await Promise.all([
       Catalog.listLevels(supabase),
       Catalog.listScenarios(supabase, user.id),
@@ -28,7 +29,15 @@ export default async function HomePage() {
       Session.getStats(supabase, user.id),
       Vocabulary.getStats(supabase, user.id),
       Vocabulary.getTopMissed(supabase, user.id, 3),
+      Catalog.listAllVariants(supabase),
     ]);
+
+  // Analytical, and getGeneratorHealth never throws — the dashboard must not
+  // depend on it (services.md §5). Sequenced after the batch above so it can
+  // be told the catalog's full key count, which only Catalog knows.
+  const generatorHealth = await ContentGeneration.getGeneratorHealth(supabase, {
+    totalPoolKeys: variants.length * levels.length,
+  });
 
   const currentLevel = levels.find((l) => l.id === levelState?.level);
   const weakScenario = weakestScenario
@@ -78,6 +87,40 @@ export default async function HomePage() {
               </form>
             </div>
           </div>
+        )}
+
+        {generatorHealth && generatorHealth.signals.length > 0 && (
+          <section className="mb-8 rise">
+            <div className="text-xs tracking-[0.25em] mb-3 text-noren-dim">GENERATOR</div>
+            <div className="grid-list flex flex-col gap-px">
+              {generatorHealth.signals.map((signal) => (
+                <div
+                  key={signal.kind}
+                  className={`px-4 py-3 text-sm bg-noren-panel border-l-3 ${
+                    signal.kind === "quota_exhausted" ? "border-noren-amber" : "border-noren-rose"
+                  }`}
+                >
+                  {signal.kind === "quota_exhausted" &&
+                    (signal.limitKind === "per_minute"
+                      ? "The writer hit Gemini's per-minute request limit in the last day. Calls are being paced; this should clear itself."
+                      : signal.limitKind === "per_day"
+                        ? "The writer used up Gemini's daily request quota in the last day. No new dialogues until it resets."
+                        : "The writer hit a Gemini quota limit in the last day.")}
+                  {signal.kind === "failure_spike" &&
+                    `${pct(signal.rate)} of the last ${signal.attempts} dialogue-writing attempts failed.`}
+                  {signal.kind === "stalled" &&
+                    (signal.lastSuccessAt
+                      ? `No dialogue has been written successfully in two days. Last one: ${new Date(signal.lastSuccessAt).toLocaleDateString()}.`
+                      : "No dialogue has been written successfully yet.")}
+                </div>
+              ))}
+              <div className="px-4 py-3 text-xs bg-noren-panel text-noren-dim">
+                {generatorHealth.poolCoverage.populated} of {generatorHealth.poolCoverage.keys}{" "}
+                scene/level combinations have dialogues written;{" "}
+                {generatorHealth.poolCoverage.belowMin} still have fewer than a full set.
+              </div>
+            </div>
+          </section>
         )}
 
         {evidence && currentLevel ? (

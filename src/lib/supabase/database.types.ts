@@ -25,6 +25,7 @@ export type Database = {
           latency_ms: number | null
           line_id: string
           note: string | null
+          score: number | null
           seq: number
           session_id: string
           user_answer: string | null
@@ -37,6 +38,7 @@ export type Database = {
           latency_ms?: number | null
           line_id: string
           note?: string | null
+          score?: number | null
           seq: number
           session_id: string
           user_answer?: string | null
@@ -49,6 +51,7 @@ export type Database = {
           latency_ms?: number | null
           line_id?: string
           note?: string | null
+          score?: number | null
           seq?: number
           session_id?: string
           user_answer?: string | null
@@ -188,57 +191,75 @@ export type Database = {
           },
         ]
       }
-      generation_errors: {
+      generation_attempts: {
         Row: {
-          category: string
+          attempt_count: number
+          category: string | null
           context: Json | null
+          details: Json | null
+          duration_ms: number | null
+          http_status: number | null
           id: string
           level: string | null
-          message: string
+          message: string | null
           occurred_at: string
+          outcome: string
           scenario_id: string | null
+          source: string | null
           stage: string
           variant_id: string | null
         }
         Insert: {
-          category: string
+          attempt_count?: number
+          category?: string | null
           context?: Json | null
+          details?: Json | null
+          duration_ms?: number | null
+          http_status?: number | null
           id?: string
           level?: string | null
-          message: string
+          message?: string | null
           occurred_at?: string
+          outcome?: string
           scenario_id?: string | null
+          source?: string | null
           stage: string
           variant_id?: string | null
         }
         Update: {
-          category?: string
+          attempt_count?: number
+          category?: string | null
           context?: Json | null
+          details?: Json | null
+          duration_ms?: number | null
+          http_status?: number | null
           id?: string
           level?: string | null
-          message?: string
+          message?: string | null
           occurred_at?: string
+          outcome?: string
           scenario_id?: string | null
+          source?: string | null
           stage?: string
           variant_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "generation_errors_level_fkey"
+            foreignKeyName: "generation_attempts_level_fkey"
             columns: ["level"]
             isOneToOne: false
             referencedRelation: "levels"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "generation_errors_scenario_id_fkey"
+            foreignKeyName: "generation_attempts_scenario_id_fkey"
             columns: ["scenario_id"]
             isOneToOne: false
             referencedRelation: "scenarios"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "generation_errors_variant_id_fkey"
+            foreignKeyName: "generation_attempts_variant_id_fkey"
             columns: ["variant_id"]
             isOneToOne: false
             referencedRelation: "scenario_variants"
@@ -711,7 +732,37 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      pool_depths: {
+        Row: {
+          depth: number | null
+          level: string | null
+          scenario_id: string | null
+          variant_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_dialogues_level_fkey"
+            columns: ["level"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_dialogues_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_dialogues_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scenario_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never

@@ -82,22 +82,9 @@ body {
   }
 }
 
-.loading-bar {
-  animation: loading-bar 1.2s ease-in-out infinite;
-}
-@keyframes loading-bar {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(300%);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .rise,
-  .pulse,
-  .loading-bar {
+  .pulse {
     animation: none;
   }
 }

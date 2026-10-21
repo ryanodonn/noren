@@ -18,6 +18,23 @@ async function callSideEffect(label: string, fn: () => Promise<unknown>) {
   }
 }
 
+/** Why a session couldn't start, in terms the UI can phrase for a learner. */
+export type StartSessionFailureReason = "pool_empty" | "no_variants";
+
+/**
+ * Wraps the ways startSession can fail so callers depend on Session's error
+ * type alone rather than reaching for ContentGeneration's as well.
+ */
+export class StartSessionError extends Error {
+  constructor(
+    readonly reason: StartSessionFailureReason,
+    message: string,
+  ) {
+    super(message);
+    this.name = "StartSessionError";
+  }
+}
+
 export async function startSession(
   supabase: DbClient,
   params: {
@@ -49,7 +66,10 @@ export async function startSession(
         params.level,
       );
       if (!replay) {
-        throw new Error("This scenario has no variants to play at this level.");
+        throw new StartSessionError(
+          "no_variants",
+          "This scenario has no variants to play at this level.",
+        );
       }
       variantId = replay.id;
       isReplay = true;
@@ -62,7 +82,35 @@ export async function startSession(
     Catalog.getVariant(supabase, variantId),
   ]);
 
-  const dialogue = await ContentGeneration.getDialogue(supabase, scenario, variant, level);
+  // Session owns `sessions`, so it reads its own history and hands
+  // ContentGeneration an exclusion set rather than letting that module query
+  // across the boundary (services.md §4).
+  const playedDialogueIds = await db.getPlayedDialogueIds(supabase, {
+    userId: params.userId,
+    scenarioId: params.scenarioId,
+    variantId,
+    level: params.level,
+  });
+
+  let dialogue;
+  let alreadyHeard;
+  try {
+    ({ dialogue, alreadyHeard } = await ContentGeneration.getDialogue(
+      supabase,
+      scenario,
+      variant,
+      level,
+      { excludeDialogueIds: playedDialogueIds },
+    ));
+  } catch (err) {
+    if (err instanceof ContentGeneration.PoolEmptyError) {
+      throw new StartSessionError(
+        "pool_empty",
+        "No dialogue is pooled for this scene at this level yet.",
+      );
+    }
+    throw err;
+  }
 
   const session = await db.insertSession(supabase, {
     userId: params.userId,
@@ -74,16 +122,31 @@ export async function startSession(
     isReplay,
   });
 
-  return { session, dialogue, scenario };
+  return { session, dialogue, scenario, alreadyHeard };
 }
 
+/**
+ * `alreadyHeard` is recomputed here rather than stored, so it survives a
+ * reload with no new column. Note it deliberately does **not** reuse
+ * `sessions.is_replay`: that already means "variant-level replay after the
+ * scenario was exhausted" and feeds Catalog.markScenarioCompletion,
+ * Progression.evaluate, and the is_replay filter behind "areas to improve" —
+ * overloading it would quietly corrupt progression evidence.
+ */
 export async function getSession(supabase: DbClient, sessionId: string) {
   const session = await db.getSession(supabase, sessionId);
-  const [dialogue, scenario] = await Promise.all([
+  const [dialogue, scenario, priorPlays] = await Promise.all([
     ContentGeneration.getDialogueById(supabase, session.dialogue_id!),
     Catalog.getScenario(supabase, session.scenario_id),
+    session.dialogue_id
+      ? db.countPriorPlays(supabase, {
+          userId: session.user_id,
+          dialogueId: session.dialogue_id,
+          before: session.started_at,
+        })
+      : Promise.resolve(0),
   ]);
-  return { session, dialogue, scenario };
+  return { session, dialogue, scenario, alreadyHeard: priorPlays > 0 };
 }
 
 export async function recordAttempt(
@@ -98,6 +161,8 @@ export async function recordAttempt(
     hintsUsed: number;
     note: string | null;
     latencyMs: number | null;
+    /** The grader's raw similarity score, for threshold tuning later. */
+    score?: number | null;
   },
 ) {
   await db.insertAttempt(supabase, params);

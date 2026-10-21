@@ -31,6 +31,52 @@ export async function insertSession(
   return data;
 }
 
+/**
+ * Dialogue ids this user has already been served for this exact pool key.
+ *
+ * `sessions.dialogue_id` has recorded this since the table existed; nothing
+ * ever read it back as history until pool-first selection needed it. Scoped
+ * to the key rather than the whole user because only dialogues under the same
+ * key can possibly collide with the pool pick, and an unscoped list grows
+ * without bound. Index: sessions_user_pool_key_idx.
+ */
+export async function getPlayedDialogueIds(
+  db: DbClient,
+  params: { userId: string; scenarioId: string; variantId: string; level: LevelId },
+): Promise<string[]> {
+  const { data, error } = await db
+    .from("sessions")
+    .select("dialogue_id")
+    .eq("user_id", params.userId)
+    .eq("scenario_id", params.scenarioId)
+    .eq("variant_id", params.variantId)
+    .eq("level", params.level)
+    .not("dialogue_id", "is", null);
+  if (error) throw error;
+
+  return [...new Set(data.map((row) => row.dialogue_id).filter((id): id is string => !!id))];
+}
+
+/**
+ * How many earlier sessions served this same dialogue to this user, so the
+ * drill can say "you've heard this one before" on a reload as well as on the
+ * first render. `before` excludes the current session itself.
+ * Index: sessions_user_dialogue_idx.
+ */
+export async function countPriorPlays(
+  db: DbClient,
+  params: { userId: string; dialogueId: string; before: string },
+): Promise<number> {
+  const { count, error } = await db
+    .from("sessions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", params.userId)
+    .eq("dialogue_id", params.dialogueId)
+    .lt("started_at", params.before);
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function getSession(db: DbClient, sessionId: string) {
   const { data, error } = await db
     .from("sessions")
@@ -52,6 +98,7 @@ export async function insertAttempt(
     hintsUsed: number;
     note: string | null;
     latencyMs: number | null;
+    score?: number | null;
   },
 ) {
   const { error } = await db.from("attempts").insert({
@@ -63,6 +110,7 @@ export async function insertAttempt(
     hints_used: params.hintsUsed,
     note: params.note,
     latency_ms: params.latencyMs,
+    score: params.score ?? null,
   });
   if (error) throw error;
 }

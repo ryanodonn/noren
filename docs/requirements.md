@@ -30,7 +30,7 @@ Noren trains the second one: bounded, low-stakes overheard conversations with a 
 
 | Mode | Depends on | Description |
 |---|---|---|
-| **Conversation** | Content Generation (Gemini + pool cache) | Every line of a two-person dialogue, translated and graded. The primary mode. |
+| **Conversation** | Content Generation (pool only; the pool is filled by a cron) | Every line of a two-person dialogue, translated and graded. The primary mode. |
 | **Listening** | Speech (browser TTS) only | Audio-first practice against the same pooled dialogues. |
 | **Flashcards** | Vocabulary (SRS) | A distinct UI surface, not a drill variant — audio-first recall, reveal shows the original sentence the word was missed in. |
 
@@ -45,7 +45,9 @@ Six levels, from a cloned reference design (see §9): **幼児** (yoji/Toddler) 
 
 ## 6. Content model
 
-- **Live generation, with a rule-based fallback — not an all-or-nothing decision, and this reversed once already.** Content Generation was originally meant to call an LLM live. It went LLM-free for a build pass (hand-authored dialogue bank, rule-based grading) because running a real API key for a pre-launch app with no users felt like premature cost. Then the actual target — 7 scenarios × 6 levels of dialogue that's fresh every time, cloned from a reference the user built — made hand-authoring hundreds of combinations impractical, so live generation came back via **Gemini** (free tier, not Anthropic) rather than reverting the whole decision. The rule-based grader from the LLM-free phase became the **fallback** when a live grading call fails, not dead code. Full history and the mechanics: `services.md` §2.3.
+- **Generated content, but generated on a schedule — never on a learner's request. This has moved twice.** Content Generation was originally meant to call an LLM live. It went LLM-free for a build pass (hand-authored dialogue bank, rule-based grading) because running a real API key for a pre-launch app with no users felt like premature cost. Then the actual target — 7 scenarios × 6 levels of dialogue that's fresh every time — made hand-authoring hundreds of combinations impractical, so generation came back via **Gemini** (free tier, not Anthropic).
+
+  As of 2026-10 it is **cron-only**: a learner's request is served from the pool or not at all, and grading went back to being purely rule-based. Two findings forced that. The free tier allows 5 requests per minute and 20 per day, which cannot support an interactive path — LLM grading alone was exhausting the daily cap. And the error log showed that in the app's entire history **no learner had ever actually triggered a live generation**: every request was already being served from the pool, so the live path carried all of the latency and quota risk and delivered none of the benefit. The accepted cost is that a scene with nothing pooled is unavailable until the cron fills it. Full history and mechanics: `services.md` §2.3.
 - **Grading direction:** the learner always translates Japanese → English (§1, §3) — there is no Japanese-production mode. This was also a correction — the app originally had the learner producing Japanese as a scripted participant, which was the wrong mechanic entirely (§1).
 - Scenarios and variants are authored data (DB rows), not code — no separate briefing content (where/who/goal/opener text) exists anymore; a scenario record is just its name, role labels, and a category badge, plus variant seed strings fed to the generator.
 - A scenario is never truly exhausted (live generation, §2.3) and is never hard-hidden; replay happens transparently through the same "Start listening" flow, flagged internally so it doesn't distort progression stats.
@@ -73,4 +75,4 @@ These aren't in an original source doc — flagging so they get an explicit yes/
 
 ~~**Full level ladder:** only 子供 and 小学生 were named.~~ Resolved — six levels, cloned from the reference design (§5).
 
-~~**Cost ceiling:** Content Generation is LLM-bound per session; no stated budget or rate-limit per user.~~ Live again via Gemini's free tier (§6) — genuinely low-stakes at current scale, but worth revisiting if usage ever grows past what the free tier covers.
+~~**Cost ceiling:** Content Generation is LLM-bound per session; no stated budget or rate-limit per user.~~ Resolved, and the binding constraint turned out to be **rate, not cost** (§6): Gemini's free tier allows 5 requests/minute and 20/day, and the per-minute figure dropped to 5 mid-September 2026 with no change on our side. Nothing is LLM-bound per session any more — generation is a twice-daily cron and grading uses no model — so per-user spend is structurally zero. What *is* worth watching is pool coverage: 84 of 198 scene/level keys have content at the time of writing, and the cron adds ~8/day at best. The home page's generator strip exists to surface that.

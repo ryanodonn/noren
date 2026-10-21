@@ -47,7 +47,7 @@ export function PickClient(props: {
 }) {
   const { levels, scenarios, defaultLevelId, defaultScenarioId, savedVoiceA, savedVoiceB } = props;
   const { speak } = useSpeech();
-  const { start: startSession, isPending, error, elapsedSec } = useStartSession();
+  const { start: startSession, isPending, error } = useStartSession();
 
   const [levelId, setLevelId] = useState(defaultLevelId);
   const [scenarioId, setScenarioId] = useState(defaultScenarioId ?? scenarios[0]?.id ?? "");
@@ -159,7 +159,8 @@ export function PickClient(props: {
         })}
       </div>
       <p className="text-xs mb-8 text-noren-dim">
-        Each run writes a new dialogue — the scene won&apos;t repeat itself.
+        Scenes are drawn from a pool of pre-written dialogues. You&apos;ll get one you
+        haven&apos;t heard yet whenever there is one.
       </p>
 
       <div className="text-xs tracking-[0.25em] mb-3 text-noren-dim">VOICES</div>
@@ -225,23 +226,8 @@ export function PickClient(props: {
         disabled={isPending || !scenarioId}
         className="w-full py-4 text-lg font-semibold uppercase tracking-[0.2em] disabled:opacity-50 bg-noren-amber text-noren-bg"
       >
-        {isPending ? (
-          <span className="pulse">Writing the dialogue… ({elapsedSec}s)</span>
-        ) : (
-          "Start listening"
-        )}
+        {isPending ? <span className="pulse">Starting…</span> : "Start listening"}
       </button>
-      {isPending && (
-        <>
-          <div className="h-1 mt-2 overflow-hidden bg-noren-panel">
-            <div className="h-full w-1/3 bg-noren-amber loading-bar" />
-          </div>
-          <p className="text-xs mt-2 text-noren-dim">
-            Usually 5–15s for a scene played before, up to 30s the first time. New scenes take
-            longer to write than replays.
-          </p>
-        </>
-      )}
     </>
   );
 }

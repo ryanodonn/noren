@@ -1,6 +1,9 @@
 import "server-only";
 
-export const PROMPT_VERSION = "gemini-v1";
+// Provenance only, never a pool partition key: hand-authored rows and every
+// generation era share one pool (services.md §2.3). Bumped to v2 when
+// acceptable_en joined the response shape.
+export const PROMPT_VERSION = "gemini-v2";
 
 type ScenarioContext = { nameEn: string; speakerA: string; speakerB: string };
 type ExampleLine = { speaker: "a" | "b"; ja: string; romaji: string; en: string };
@@ -39,7 +42,7 @@ SPEAKER A: ${scenario.speakerA}
 SPEAKER B: ${scenario.speakerB}
 DIFFICULTY: ${level.labelEn} (${level.labelJa}) — ${level.spec}${exampleBlock}
 
-Write 6 to 8 alternating lines starting with speaker A. The dialogue must be natural for the scene and stay strictly inside the difficulty band — this is the most important constraint. A learner at this level should be able to follow it. Do not slip in vocabulary or grammar above the band.
+Write 6 to 8 lines that alternate strictly, turn by turn. Either speaker may open — whichever is natural for walking in on a scene already in progress. The dialogue must be natural for the scene and stay strictly inside the difficulty band — this is the most important constraint. A learner at this level should be able to follow it. Do not slip in vocabulary or grammar above the band.
 
 Respond with ONLY a JSON object of the form:
 {
@@ -55,21 +58,14 @@ Respond with ONLY a JSON object of the form:
       "key_ja": "the single most load-bearing word in the line, glossed — the one that unlocks comprehension",
       "key_romaji": "romaji of that word",
       "key_en": "English gloss of that word",
-      "tokens": [{"ja":"...","kana":"...","romaji":"...","en":"..."}]
+      "tokens": [{"ja":"...","kana":"...","romaji":"...","en":"..."}],
+      "acceptable_en": ["another natural English translation", "..."]
     }
   ]
 }
 
-"tokens" must split the ENTIRE line into tappable chunks that reconstruct it exactly when concatenated in order — group each word with its trailing particles or inflections, never split into single characters. Punctuation may be its own token with an empty "en".`;
-}
+"tokens" must split the ENTIRE line into tappable chunks that reconstruct it exactly when concatenated in order — group each word with its trailing particles or inflections, never split into single characters. Punctuation may be its own token with an empty "en". For example, for ja "袋はいりますか。":
+  "tokens": [{"ja":"袋は","kana":"ふくろは","romaji":"fukuro wa","en":"bag"},{"ja":"いりますか","kana":"いりますか","romaji":"irimasu ka","en":"do you need"},{"ja":"。","romaji":"","en":""}]
 
-export function gradePrompt(params: { ja: string; expectedEn: string; userAnswer: string }) {
-  return `A Japanese learner heard this line and translated it into English. Grade generously — meaning matters, exact wording does not.
-
-JAPANESE: ${params.ja}
-CORRECT MEANING: ${params.expectedEn}
-THEIR ANSWER: ${params.userAnswer}
-
-Respond with ONLY a JSON object:
-{"verdict":"got_it"|"close"|"missed","note":"one short sentence. If close or missed, say specifically what they misread — a wrong tense, a confused word, a missed question marker. If they got it, say nothing longer than a few words."}`;
+"acceptable_en" must list 3 to 5 ADDITIONAL natural English translations of the same line that a learner could reasonably type and should be counted fully correct. Vary contractions, politeness, and common synonym choices. Do not repeat the "en" value itself, and do not include anything that changes the meaning — these are graded as correct answers.`;
 }

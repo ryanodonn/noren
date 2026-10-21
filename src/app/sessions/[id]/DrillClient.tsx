@@ -26,6 +26,8 @@ export function DrillClient(props: {
   setting: string | null;
   voiceA: string | null;
   voiceB: string | null;
+  /** This learner has been served this exact dialogue before. */
+  alreadyHeard: boolean;
   lines: Line[];
 }) {
   const {
@@ -39,6 +41,7 @@ export function DrillClient(props: {
     setting,
     voiceA,
     voiceB,
+    alreadyHeard,
     lines,
   } = props;
   const { speak } = useSpeech();
@@ -174,6 +177,13 @@ export function DrillClient(props: {
             {levelLabelEn}
           </div>
         </div>
+        {/* Outlined and dim rather than filled: this is metadata about the
+            draw, not a warning about it. */}
+        {alreadyHeard && (
+          <div className="text-[10px] tracking-[0.2em] px-2 py-1 border border-noren-edge text-noren-dim shrink-0">
+            HEARD BEFORE
+          </div>
+        )}
         <div className="ml-auto flex items-center gap-1">
           {lines.map((_, i) => (
             <div

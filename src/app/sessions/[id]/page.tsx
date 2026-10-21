@@ -13,7 +13,7 @@ export default async function SessionPage({ params }: PageProps<"/sessions/[id]"
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { session, dialogue, scenario } = await Session.getSession(supabase, id);
+  const { session, dialogue, scenario, alreadyHeard } = await Session.getSession(supabase, id);
   const [level, me] = await Promise.all([
     Catalog.getLevel(supabase, session.level),
     Identity.getMe(supabase),
@@ -33,6 +33,7 @@ export default async function SessionPage({ params }: PageProps<"/sessions/[id]"
       setting={dialogue.setting}
       voiceA={savedVoices.a ?? null}
       voiceB={savedVoices.b ?? null}
+      alreadyHeard={alreadyHeard}
       lines={dialogue.generated_lines.map((l) => ({
         id: l.id,
         seq: l.seq,

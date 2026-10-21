@@ -45,9 +45,30 @@ describe("validateGeneratedDialogue", () => {
     expect(() => validateGeneratedDialogue(dialogue)).toThrow(DialogueValidationError);
   });
 
-  it("rejects speakers that don't alternate starting with a", () => {
+  it("accepts a dialogue that opens on speaker b and alternates cleanly", () => {
+    // `speaker` is a role binding, not a turn index — the customer opening
+    // is a legitimate scene. Relabeling to force an "a" opener would
+    // reassign every line to the wrong speaker; see validation.ts.
     const dialogue = validDialogue();
-    dialogue.lines[0] = line({ speaker: "b" });
+    dialogue.lines = ["b", "a", "b", "a", "b", "a"].map((speaker) => line({ speaker }));
+    expect(() => validateGeneratedDialogue(dialogue)).not.toThrow();
+  });
+
+  it("rejects speakers that do not strictly alternate", () => {
+    const dialogue = validDialogue();
+    dialogue.lines = ["a", "a", "b", "b", "a", "b"].map((speaker) => line({ speaker }));
+    expect(() => validateGeneratedDialogue(dialogue)).toThrow(DialogueValidationError);
+  });
+
+  it("rejects a dialogue where one speaker says everything", () => {
+    const dialogue = validDialogue();
+    dialogue.lines = ["a", "a", "a", "a", "a", "a"].map((speaker) => line({ speaker }));
+    expect(() => validateGeneratedDialogue(dialogue)).toThrow(DialogueValidationError);
+  });
+
+  it("rejects an opener that is not a or b", () => {
+    const dialogue = validDialogue();
+    dialogue.lines[0] = line({ speaker: "clerk" });
     expect(() => validateGeneratedDialogue(dialogue)).toThrow(DialogueValidationError);
   });
 
