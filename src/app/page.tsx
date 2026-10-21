@@ -7,6 +7,7 @@ import * as Session from "@/modules/session";
 import * as Vocabulary from "@/modules/vocabulary";
 import * as ContentGeneration from "@/modules/content-generation";
 import { acceptRecommendation, dismissRecommendation } from "./actions";
+import { version } from "../../package.json";
 
 function pct(rate: number) {
   return `${Math.round(rate * 100)}%`;
@@ -266,6 +267,10 @@ export default async function HomePage() {
         >
           Start listening
         </Link>
+
+        <div className="mt-6 text-center text-[10px] tracking-[0.2em] text-noren-dim">
+          v{version}
+        </div>
       </div>
     </main>
   );
